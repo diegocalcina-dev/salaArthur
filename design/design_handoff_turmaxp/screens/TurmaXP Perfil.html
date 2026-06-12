@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Meu Ninja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620; --outline:2.5px solid var(--ink);
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 40% at 50% -6%, #321d5e 0%, rgba(50,29,94,0) 58%),
+      radial-gradient(80% 30% at 50% 14%, rgba(247,201,72,.10) 0%, rgba(247,201,72,0) 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:84px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.85));
+    backdrop-filter:blur(8px); border-bottom:1.5px solid var(--border);
+    padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .h-title { font-size:21px; color:#fff; }
+  .edit-btn {
+    font-weight:900; font-size:12.5px; color:var(--orange-soft);
+    background:rgba(255,107,0,.08); border:1.5px solid var(--orange);
+    padding:8px 15px; border-radius:var(--r-pill); cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .edit-btn:active { background:rgba(255,107,0,.16); }
+
+  .content { padding:18px 16px; display:flex; flex-direction:column; gap:20px; }
+
+  /* ===== AVATAR + DADOS ===== */
+  .hero { text-align:center; }
+  .av-big {
+    width:120px; height:120px; margin:0 auto; border-radius:50%; padding:4px; position:relative;
+    background:conic-gradient(from 0deg, var(--gold), #fff, var(--orange), var(--gold));
+    box-shadow:0 0 26px 1px rgba(247,201,72,.7), 0 0 54px 4px rgba(255,107,0,.35);
+    animation:halo 3s ease-in-out infinite;
+  }
+  @keyframes halo { 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.15);} }
+  .av-big .face {
+    width:100%; height:100%; border-radius:50%;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 8px, var(--card) 8px 16px);
+    border:3px solid var(--ink); display:grid; place-items:center; font-size:58px;
+  }
+  .av-lvl {
+    position:absolute; bottom:-2px; right:-2px;
+    font-family:'Anton',sans-serif; font-size:13px; color:var(--ink);
+    background:linear-gradient(180deg,#FFDC74,var(--gold)); border:3px solid var(--ink);
+    border-radius:var(--r-pill); padding:4px 10px 3px; line-height:1;
+  }
+  .hero-name { font-weight:900; font-size:25px; margin-top:16px; }
+  .hero-role {
+    display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+    font-weight:900; font-size:13px; text-transform:uppercase; letter-spacing:.5px;
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2.5px solid var(--ink); border-radius:var(--r-pill); padding:7px 16px;
+    box-shadow:var(--glow-orange);
+  }
+  .hero-meta { font-size:13px; font-weight:800; color:var(--text-dim); margin-top:13px; }
+  .hero-meta b { color:var(--orange-soft); }
+
+  /* barra XP nível */
+  .lvlbar-wrap { margin-top:16px; text-align:left; }
+  .lvlbar-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .lvlbar-head .l { font-size:11px; font-weight:900; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; }
+  .lvlbar-head .v { font-size:11.5px; font-weight:900; color:var(--gold); }
+  .lvlbar { height:18px; background:var(--bg); border:2.5px solid var(--ink); border-radius:var(--r-pill); overflow:hidden; box-shadow:inset 0 2px 6px rgba(0,0,0,.6); }
+  .lvlbar i {
+    display:block; height:100%; width:92%; border-radius:var(--r-pill);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    box-shadow:0 0 12px 1px rgba(255,107,0,.7); position:relative; overflow:hidden;
+  }
+  .lvlbar i::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(115deg, rgba(255,255,255,.22) 0 5px, transparent 5px 13px); }
+
+  /* ===== SEÇÃO TITULOS ===== */
+  .sec-head { display:flex; align-items:center; gap:10px; margin-bottom:13px; }
+  .sec-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:17px; letter-spacing:.5px; color:#fff; white-space:nowrap; }
+  .sec-line { flex:1; height:3px; border-radius:var(--r-pill); background:repeating-linear-gradient(115deg, rgba(255,107,0,.5) 0 7px, transparent 7px 13px); }
+
+  /* ===== ESTATÍSTICAS ===== */
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .stat {
+    background:linear-gradient(180deg, var(--raised), var(--card));
+    border:1.5px solid var(--border); border-radius:var(--r-md);
+    padding:13px; box-shadow:var(--shadow-card);
+  }
+  .stat .k { font-size:11px; font-weight:900; color:var(--text-dim); display:flex; align-items:center; gap:6px; }
+  .stat .v { font-family:'Anton',sans-serif; font-size:24px; margin-top:7px; line-height:1; }
+  .stat .vsub { font-size:11px; font-weight:800; color:var(--text-faint); }
+  .stat.s-xp .v { color:var(--xp); }
+  .stat.s-tasks .v { color:var(--success); }
+  .stat.s-rank .v { color:var(--gold); }
+  .stat.s-streak .v { color:var(--orange-soft); }
+
+  /* ===== EQUIPAMENTOS ===== */
+  .gear { display:grid; grid-template-columns:repeat(3,1fr); gap:11px; }
+  .item {
+    background:linear-gradient(180deg, var(--raised), var(--card));
+    border:2px solid var(--border); border-radius:var(--r-md);
+    padding:11px 8px; text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:7px;
+    position:relative; min-height:128px; justify-content:space-between;
+  }
+  .item-tile {
+    width:48px; height:48px; border-radius:13px; border:2.5px solid var(--ink);
+    display:grid; place-items:center; font-size:24px;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 6px, var(--card) 6px 12px);
+  }
+  .item-name { font-weight:900; font-size:11px; line-height:1.15; }
+  .item-tag {
+    font-size:8.5px; font-weight:900; letter-spacing:.5px; text-transform:uppercase;
+    padding:3px 8px; border-radius:var(--r-pill); border:1.5px solid;
+  }
+  .item-cond { font-size:8.5px; font-weight:800; color:var(--text-faint); line-height:1.2; }
+  .item-equip-btn {
+    font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.3px;
+    color:var(--orange-soft); background:rgba(255,107,0,.08); border:1.5px solid var(--orange);
+    border-radius:var(--r-pill); padding:5px 12px; cursor:pointer; width:100%;
+  }
+  .item-equip-btn:active { background:rgba(255,107,0,.16); }
+
+  /* estados */
+  .item.equipped { border-color:var(--orange); box-shadow:0 0 0 1px rgba(255,107,0,.2), 0 0 16px -6px rgba(255,107,0,.5); }
+  .item.equipped .item-tile { box-shadow:0 0 12px -2px rgba(255,107,0,.6); }
+  .item.equipped .item-tag { color:#fff; background:var(--orange); border-color:var(--ink); }
+  .item.rare { border-color:var(--rare); }
+  .item.rare .item-tile { box-shadow:0 0 12px -2px rgba(155,89,182,.6); }
+  .item.rare .item-tag { color:#fff; background:var(--rare); border-color:var(--ink); }
+  .item.exclusive { border-color:var(--gold); }
+  .item.exclusive .item-tile { box-shadow:0 0 14px -2px rgba(247,201,72,.7); }
+  .item.exclusive .item-tag { color:var(--ink); background:linear-gradient(180deg,#FFDC74,var(--gold)); border-color:var(--ink); }
+  .item.locked { opacity:.55; }
+  .item.locked .item-tag { color:var(--text-dim); background:rgba(110,94,155,.18); border-color:var(--text-faint); }
+
+  /* ===== CONQUISTAS ===== */
+  .ach-list { display:flex; flex-direction:column; gap:10px; }
+  .ach {
+    display:flex; align-items:center; gap:12px;
+    background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md);
+    padding:12px 13px;
+  }
+  .ach.locked { opacity:.5; border-style:dashed; }
+  .ach-ico {
+    flex-shrink:0; width:40px; height:40px; border-radius:11px; border:2px solid var(--ink);
+    display:grid; place-items:center; font-size:20px;
+    background:rgba(255,107,0,.12);
+  }
+  .ach.locked .ach-ico { background:rgba(110,94,155,.14); }
+  .ach-info { flex:1; min-width:0; }
+  .ach-name { font-weight:900; font-size:14px; }
+  .ach-meta { font-size:11px; font-weight:700; color:var(--text-faint); margin-top:2px; }
+  .ach-check { flex-shrink:0; font-size:18px; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg,#241552,#160D34);
+    border-top:2.5px solid var(--border);
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.8);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom)); z-index:40;
+  }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-size:10px; font-weight:900; color:var(--text-faint); border:none; background:none; border-radius:var(--r-md); }
+  .nav-item .ico { font-size:21px; line-height:1; filter:grayscale(.4) opacity(.7); transition:.15s; }
+  .nav-item.active { color:var(--orange-soft); }
+  .nav-item.active .ico { filter:none; transform:translateY(-1px); text-shadow:0 0 14px rgba(255,107,0,.8); }
+  .nav-item.active::after { content:""; width:22px; height:4px; border-radius:var(--r-pill); background:var(--orange); box-shadow:0 0 10px -1px var(--orange); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Perfil">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <h1 class="h-title display">Meu Ninja</h1>
+    <button class="edit-btn">✏️ Editar</button>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== AVATAR + DADOS ===== -->
+    <section class="hero" data-screen-label="Avatar e dados">
+      <div class="av-big">
+        <div class="face">🦊</div>
+        <span class="av-lvl">NV 7</span>
+      </div>
+      <div class="hero-name">Naruto Uzumaki</div>
+      <div><span class="hero-role">🔥 Rei da Sequência</span></div>
+      <div class="hero-meta">Nível <b>7</b> • 🔥 Streak <b>12 dias</b></div>
+
+      <div class="lvlbar-wrap">
+        <div class="lvlbar-head">
+          <span class="l">Para o Nível 8</span>
+          <span class="v">1.840 / 2.000 XP</span>
+        </div>
+        <div class="lvlbar"><i></i></div>
+      </div>
+    </section>
+
+    <!-- ===== ESTATÍSTICAS ===== -->
+    <section data-screen-label="Estatísticas">
+      <div class="sec-head"><span class="sec-title">Estatísticas</span><span class="sec-line"></span></div>
+      <div class="stats">
+        <div class="stat s-xp">
+          <div class="k">⭐ XP Total</div>
+          <div class="v num">12.480</div>
+        </div>
+        <div class="stat s-tasks">
+          <div class="k">✅ Tarefas feitas</div>
+          <div class="v num">147</div>
+        </div>
+        <div class="stat s-rank">
+          <div class="k">🏆 Melhor ranking</div>
+          <div class="v num">#1</div>
+          <div class="vsub">na semana 18</div>
+        </div>
+        <div class="stat s-streak">
+          <div class="k">🔥 Maior streak</div>
+          <div class="v num">18 dias</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EQUIPAMENTOS ===== -->
+    <section data-screen-label="Equipamentos">
+      <div class="sec-head"><span class="sec-title">Equipamentos</span><span class="sec-line"></span></div>
+      <div class="gear">
+
+        <div class="item equipped">
+          <div class="item-tile">🎽</div>
+          <div class="item-name">Faixa Ninja</div>
+          <span class="item-tag">Equipado</span>
+        </div>
+
+        <div class="item rare">
+          <div class="item-tile">🔵</div>
+          <div class="item-name">Chakra Azul</div>
+          <span class="item-tag">Raro</span>
+        </div>
+
+        <div class="item locked">
+          <div class="item-tile">🥋</div>
+          <div class="item-name">Manto Hokage</div>
+          <span class="item-tag">Bloqueado</span>
+          <span class="item-cond">Alcance o nível 10</span>
+        </div>
+
+        <div class="item">
+          <div class="item-tile">🗡️</div>
+          <div class="item-name">Kunai Dourada</div>
+          <button class="item-equip-btn">Equipar</button>
+        </div>
+
+        <div class="item exclusive">
+          <div class="item-tile">✨</div>
+          <div class="item-name">Aura do Invicto</div>
+          <span class="item-tag">Exclusivo</span>
+          <span class="item-cond">Top 1 por 1 semana</span>
+        </div>
+
+        <div class="item">
+          <div class="item-tile">🟢</div>
+          <div class="item-name">Bandana Verde</div>
+          <button class="item-equip-btn">Equipar</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== CONQUISTAS ===== -->
+    <section data-screen-label="Conquistas">
+      <div class="sec-head"><span class="sec-title">Conquistas</span><span class="sec-line"></span></div>
+      <div class="ach-list">
+        <div class="ach">
+          <div class="ach-ico">🔥</div>
+          <div class="ach-info">
+            <div class="ach-name">Streak de 7 dias</div>
+            <div class="ach-meta">Desbloqueado há 5 dias</div>
+          </div>
+          <span class="ach-check">✅</span>
+        </div>
+        <div class="ach">
+          <div class="ach-ico">⭐</div>
+          <div class="ach-info">
+            <div class="ach-name">Primeira semana perfeita</div>
+            <div class="ach-meta">Desbloqueado na semana 20</div>
+          </div>
+          <span class="ach-check">✅</span>
+        </div>
+        <div class="ach">
+          <div class="ach-ico">🏆</div>
+          <div class="ach-info">
+            <div class="ach-name">Top 3 da turma</div>
+            <div class="ach-meta">Desbloqueado na semana 18</div>
+          </div>
+          <span class="ach-check">✅</span>
+        </div>
+        <div class="ach locked">
+          <div class="ach-ico">👑</div>
+          <div class="ach-info">
+            <div class="ach-name">Hokage da Turma</div>
+            <div class="ach-meta">Seja #1 por 3 semanas seguidas</div>
+          </div>
+          <span class="ach-check">🔒</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <button class="nav-item"><span class="ico">🏠</span>Home</button>
+    <button class="nav-item"><span class="ico">🏆</span>Ranking</button>
+    <button class="nav-item active"><span class="ico">👤</span>Perfil</button>
+    <button class="nav-item"><span class="ico">💬</span>Turma</button>
+  </nav>
+
+</div>
+</body>
+</html>

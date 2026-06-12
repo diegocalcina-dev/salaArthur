@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Arena da Turma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --silver:#C9D2E0; --silver-deep:#8893A6;
+    --bronze:#D08B4E; --bronze-deep:#9A5F2E;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620; --outline:2.5px solid var(--ink);
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+    --shadow-card:0 10px 26px -12px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 45% at 50% -6%, #38205c 0%, rgba(56,32,92,0) 55%),
+      radial-gradient(80% 36% at 50% 30%, rgba(255,107,0,.10) 0%, rgba(255,107,0,0) 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:170px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:relative; z-index:5;
+    padding:16px 16px 12px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  }
+  .h-title { font-size:25px; color:#fff; }
+  .h-title .b5 { color:var(--orange); -webkit-text-stroke:1px var(--ink); paint-order:stroke fill; }
+  .h-sub { font-size:12px; font-weight:800; color:var(--text-dim); margin-top:5px; }
+  .h-sub b { color:var(--gold); }
+  .live {
+    flex-shrink:0;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:900; letter-spacing:.5px; text-transform:uppercase; color:#fff;
+    background:rgba(231,76,60,.14); border:2px solid var(--danger);
+    border-radius:var(--r-pill); padding:5px 11px 5px 9px;
+  }
+  .live .dot {
+    width:9px; height:9px; border-radius:50%; background:var(--danger);
+    box-shadow:0 0 0 0 rgba(231,76,60,.7); animation:liveBlink 1.4s ease-in-out infinite;
+  }
+  @keyframes liveBlink { 0%,100%{ box-shadow:0 0 0 0 rgba(231,76,60,.7);} 50%{ box-shadow:0 0 0 6px rgba(231,76,60,0);} }
+
+  /* ===== PÓDIO ===== */
+  .arena {
+    position:relative; margin:6px 12px 0;
+    padding:14px 6px 0;
+    border-radius:var(--r-lg) var(--r-lg) 0 0;
+    overflow:hidden;
+  }
+  /* speed lines de fundo da arena */
+  .arena::before {
+    content:""; position:absolute; inset:0; z-index:0;
+    background:repeating-linear-gradient(115deg, rgba(255,107,0,.06) 0 10px, transparent 10px 22px);
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, transparent 75%);
+            mask-image:linear-gradient(180deg, #000 0%, transparent 75%);
+  }
+  .podium { position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:center; gap:8px; }
+  .pod { flex:1; display:flex; flex-direction:column; align-items:center; }
+  .pod-c { flex:1.15; }
+
+  .pod-av {
+    position:relative; border-radius:50%; padding:3px;
+    display:grid; place-items:center;
+  }
+  .pod-2 .pod-av { width:62px; height:62px; background:conic-gradient(from 0deg, var(--silver-deep), var(--silver), var(--silver-deep)); box-shadow:0 0 12px -2px rgba(201,210,224,.6); }
+  .pod-3 .pod-av { width:56px; height:56px; background:conic-gradient(from 0deg, var(--bronze-deep), var(--bronze), var(--bronze-deep)); box-shadow:0 0 12px -2px rgba(208,139,78,.6); }
+  .pod-1 .pod-av { width:82px; height:82px; background:conic-gradient(from 0deg, var(--gold), #fff, var(--orange), var(--gold)); box-shadow:0 0 24px 1px rgba(247,201,72,.85), 0 0 50px 2px rgba(255,107,0,.45); animation:champGlow 2.4s ease-in-out infinite; }
+  @keyframes champGlow { 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.18);} }
+  .pod-av .face {
+    width:100%; height:100%; border-radius:50%;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 7px, var(--card) 7px 14px);
+    border:2.5px solid var(--ink); display:grid; place-items:center;
+  }
+  .pod-2 .face { font-size:28px; } .pod-3 .face { font-size:25px; } .pod-1 .face { font-size:40px; }
+
+  .crown { position:absolute; top:-26px; left:50%; transform:translateX(-50%); font-size:30px; filter:drop-shadow(0 3px 6px rgba(247,201,72,.7)); animation:bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{ transform:translateX(-50%) translateY(0);} 50%{ transform:translateX(-50%) translateY(-4px);} }
+
+  .pod-rankbadge {
+    margin-top:-12px; position:relative; z-index:2;
+    font-family:'Anton',sans-serif; font-size:14px; color:var(--ink);
+    border:2.5px solid var(--ink); border-radius:var(--r-pill);
+    width:26px; height:26px; display:grid; place-items:center;
+  }
+  .pod-1 .pod-rankbadge { background:linear-gradient(180deg,#FFDC74,var(--gold)); width:30px; height:30px; font-size:16px; }
+  .pod-2 .pod-rankbadge { background:linear-gradient(180deg,#fff,var(--silver)); }
+  .pod-3 .pod-rankbadge { background:linear-gradient(180deg,#E8B587,var(--bronze)); }
+
+  .pod-name { font-weight:900; font-size:14px; color:#fff; margin-top:6px; text-align:center; }
+  .pod-1 .pod-name { font-size:17px; }
+  .pod-xp { font-family:'Anton',sans-serif; font-size:15px; color:var(--xp); margin-top:1px; }
+  .pod-1 .pod-xp { font-size:20px; }
+  .pod-role {
+    font-size:9.5px; font-weight:900; color:var(--text-dim); margin-top:4px;
+    text-align:center; line-height:1.2; max-width:100px;
+  }
+  .pod-1 .pod-role { color:var(--orange-soft); }
+
+  /* plataformas */
+  .platform {
+    width:100%; margin-top:9px;
+    border:2.5px solid var(--ink);
+    border-bottom:none;
+    border-radius:10px 10px 0 0;
+    display:grid; place-items:center;
+    font-family:'Anton',sans-serif; color:rgba(255,255,255,.85);
+    text-shadow:0 2px 0 rgba(0,0,0,.35);
+  }
+  .pod-1 .platform { height:78px; font-size:34px; background:linear-gradient(180deg, var(--orange), #7a3500); box-shadow:inset 0 3px 0 rgba(255,255,255,.25); }
+  .pod-2 .platform { height:54px; font-size:24px; background:linear-gradient(180deg, #5f6b82, #313850); }
+  .pod-3 .platform { height:40px; font-size:20px; background:linear-gradient(180deg, var(--bronze), #5e3818); }
+
+  .arena-floor {
+    height:8px; margin:0 12px;
+    background:linear-gradient(180deg, var(--ink), #0a0620);
+    border:2.5px solid var(--ink); border-top:none;
+    border-radius:0 0 12px 12px;
+    box-shadow:0 10px 20px -10px rgba(0,0,0,.8);
+  }
+
+  /* ===== LISTA ===== */
+  .list-wrap { padding:18px 16px 0; }
+  .list-head {
+    display:flex; align-items:center; gap:8px; margin-bottom:12px;
+  }
+  .list-head .lt { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:1px; color:var(--text-dim); }
+  .list-head .ln { flex:1; height:3px; border-radius:var(--r-pill); background:repeating-linear-gradient(115deg, var(--border) 0 6px, transparent 6px 11px); }
+
+  .row {
+    display:flex; align-items:center; gap:11px;
+    background:linear-gradient(180deg, var(--raised), var(--card));
+    border:2px solid var(--border); border-radius:var(--r-md);
+    padding:9px 13px; margin-bottom:9px;
+  }
+  .row.me {
+    border:2.5px solid var(--orange);
+    background:radial-gradient(120% 140% at 0% 0%, rgba(255,107,0,.18), rgba(30,18,64,.95));
+    box-shadow:0 0 0 1px rgba(255,107,0,.25), 0 10px 22px -12px rgba(255,107,0,.5);
+  }
+  .r-pos { font-family:'Anton',sans-serif; font-size:19px; width:28px; text-align:center; color:var(--text-faint); }
+  .row.me .r-pos { color:var(--orange); }
+  .r-av {
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    border:2.5px solid var(--ink); display:grid; place-items:center; font-size:19px;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 6px, var(--card) 6px 12px);
+  }
+  .row.me .r-av { box-shadow:0 0 0 2px var(--orange); }
+  .r-info { flex:1; min-width:0; }
+  .r-name { font-weight:900; font-size:14.5px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.me .r-name .you { color:var(--orange-soft); font-size:11px; margin-left:5px; }
+  .r-role { font-size:10.5px; font-weight:800; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+  .r-right { display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
+  .r-xp { font-family:'Anton',sans-serif; font-size:16px; color:var(--xp); }
+  .r-delta { font-size:11px; font-weight:900; display:inline-flex; align-items:center; gap:2px; }
+  .up { color:var(--success); } .down { color:var(--danger); } .same { color:var(--text-faint); }
+
+  /* ===== SEU DESEMPENHO (fixo) ===== */
+  .perf {
+    position:fixed; bottom:72px; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw); z-index:35;
+    padding:0 12px;
+  }
+  .perf-card {
+    background:linear-gradient(180deg, #34205e, #211448);
+    border:2.5px solid var(--orange);
+    border-radius:var(--r-lg);
+    padding:13px 15px;
+    box-shadow:0 0 0 1px rgba(255,107,0,.2), 0 -6px 28px -10px rgba(0,0,0,.8), 0 0 22px -8px rgba(255,107,0,.4);
+  }
+  .perf-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .perf-pos { font-family:'Anton',sans-serif; font-size:20px; color:#fff; }
+  .perf-pos b { color:var(--orange); }
+  .perf-streak {
+    font-weight:900; font-size:12px; color:var(--text-dim);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .perf-streak .fire { color:var(--orange-soft); }
+  .perf-goal { font-size:12px; font-weight:800; color:var(--text-dim); margin:9px 0 7px; }
+  .perf-goal b { color:var(--gold); }
+  .pbar { height:14px; background:var(--bg); border:2px solid var(--ink); border-radius:var(--r-pill); overflow:hidden; position:relative; box-shadow:inset 0 2px 5px rgba(0,0,0,.6); }
+  .pbar-fill {
+    height:100%; width:47%; border-radius:var(--r-pill);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    box-shadow:0 0 12px 1px rgba(255,107,0,.7);
+    position:relative; overflow:hidden;
+  }
+  .pbar-fill::after {
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(115deg, rgba(255,255,255,.22) 0 5px, transparent 5px 13px);
+  }
+  .pbar-tick { display:flex; justify-content:space-between; margin-top:5px; font-size:9.5px; font-weight:900; }
+  .pbar-tick .cur { color:var(--orange-soft); } .pbar-tick .next { color:var(--text-faint); }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg,#241552,#160D34);
+    border-top:2.5px solid var(--border);
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.8);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index:40;
+  }
+  .nav-item {
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:6px 0; cursor:pointer; font-size:10px; font-weight:900; color:var(--text-faint);
+    border:none; background:none; border-radius:var(--r-md);
+  }
+  .nav-item .ico { font-size:21px; line-height:1; filter:grayscale(.4) opacity(.7); transition:.15s; }
+  .nav-item.active { color:var(--orange-soft); }
+  .nav-item.active .ico { filter:none; transform:translateY(-1px); text-shadow:0 0 14px rgba(255,107,0,.8); }
+  .nav-item.active::after { content:""; width:22px; height:4px; border-radius:var(--r-pill); background:var(--orange); box-shadow:0 0 10px -1px var(--orange); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Ranking">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div>
+      <h1 class="h-title display">Arena da Turma <span class="b5">5ºB</span></h1>
+      <div class="h-sub">Semana 23 • Reinicia em <b>3 dias</b></div>
+    </div>
+    <span class="live"><span class="dot"></span>Ao vivo</span>
+  </header>
+
+  <!-- ===== PÓDIO ===== -->
+  <section class="arena" data-screen-label="Pódio Top 3">
+    <div class="podium">
+
+      <!-- 2º -->
+      <div class="pod pod-2">
+        <div class="pod-av"><div class="face">🌸</div></div>
+        <div class="pod-rankbadge">2</div>
+        <div class="pod-name">Sakura</div>
+        <div class="pod-xp num">890</div>
+        <div class="pod-role">⚡ Mestre de Ciências</div>
+        <div class="platform">2</div>
+      </div>
+
+      <!-- 1º -->
+      <div class="pod pod-c pod-1">
+        <div class="pod-av">
+          <span class="crown">👑</span>
+          <div class="face">🥷</div>
+        </div>
+        <div class="pod-rankbadge">1</div>
+        <div class="pod-name">Sasuke</div>
+        <div class="pod-xp num">1.240</div>
+        <div class="pod-role">🔥 O Invicto</div>
+        <div class="platform">1</div>
+      </div>
+
+      <!-- 3º -->
+      <div class="pod pod-3">
+        <div class="pod-av"><div class="face">🐚</div></div>
+        <div class="pod-rankbadge">3</div>
+        <div class="pod-name">Hinata</div>
+        <div class="pod-xp num">720</div>
+        <div class="pod-role">💪 Voltou por Cima</div>
+        <div class="platform">3</div>
+      </div>
+
+    </div>
+  </section>
+  <div class="arena-floor"></div>
+
+  <!-- ===== LISTA COMPLETA ===== -->
+  <section class="list-wrap" data-screen-label="Lista completa">
+    <div class="list-head">
+      <span class="lt">Resto da Arena</span>
+      <span class="ln"></span>
+    </div>
+
+    <!-- 4 — usuário -->
+    <div class="row me" data-screen-label="Sua linha">
+      <span class="r-pos">4</span>
+      <span class="r-av" style="background:var(--orange)">🦊</span>
+      <div class="r-info">
+        <div class="r-name">Naruto <span class="you">VOCÊ</span></div>
+        <div class="r-role">🔥 Rei da Sequência</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">340</span>
+        <span class="r-delta up">▲ 1</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">5</span>
+      <span class="r-av">🟢</span>
+      <div class="r-info">
+        <div class="r-name">Rock Lee</div>
+        <div class="r-role">🥋 Punho de Ferro</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">290</span>
+        <span class="r-delta down">▼ 2</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">6</span>
+      <span class="r-av">🌼</span>
+      <div class="r-info">
+        <div class="r-name">Ino</div>
+        <div class="r-role">🌀 Mente Veloz</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">250</span>
+        <span class="r-delta same">—</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">7</span>
+      <span class="r-av">🍖</span>
+      <div class="r-info">
+        <div class="r-name">Choji</div>
+        <div class="r-role">🛡️ Muralha</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">180</span>
+        <span class="r-delta down">▼ 1</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">8</span>
+      <span class="r-av">🐶</span>
+      <div class="r-info">
+        <div class="r-name">Kiba</div>
+        <div class="r-role">👃 Faro Ninja</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">150</span>
+        <span class="r-delta up">▲ 3</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">9</span>
+      <span class="r-av">🐛</span>
+      <div class="r-info">
+        <div class="r-name">Shino</div>
+        <div class="r-role">🐝 Silencioso</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">120</span>
+        <span class="r-delta same">—</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="r-pos">10</span>
+      <span class="r-av">😴</span>
+      <div class="r-info">
+        <div class="r-name">Shikamaru</div>
+        <div class="r-role">♟️ Estrategista</div>
+      </div>
+      <div class="r-right">
+        <span class="r-xp num">95</span>
+        <span class="r-delta down">▼ 4</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== SEU DESEMPENHO (fixo) ===== -->
+  <div class="perf">
+    <div class="perf-card" data-screen-label="Seu desempenho">
+      <div class="perf-top">
+        <span class="perf-pos">Sua posição: <b>#4</b></span>
+        <span class="perf-streak">340 XP • <span class="fire">🔥 Streak 12 dias</span></span>
+      </div>
+      <div class="perf-goal">Faltam <b>380 XP</b> para o <b>3º lugar</b> 🥉</div>
+      <div class="pbar"><div class="pbar-fill"></div></div>
+      <div class="pbar-tick">
+        <span class="cur">Você · 340 XP</span>
+        <span class="next">Hinata · 720 XP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <button class="nav-item"><span class="ico">🏠</span>Home</button>
+    <button class="nav-item active"><span class="ico">🏆</span>Ranking</button>
+    <button class="nav-item"><span class="ico">👤</span>Perfil</button>
+    <button class="nav-item"><span class="ico">💬</span>Turma</button>
+  </nav>
+
+</div>
+</body>
+</html>

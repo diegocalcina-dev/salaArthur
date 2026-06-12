@@ -1,0 +1,120 @@
+{
+  "tasks": [
+    {
+      "id": "task-1",
+      "title": "Lição de Matemática pág. 45",
+      "subject": "Matemática",
+      "description": "Livro azul de Matemática, página 45. Fazer os exercícios 1 ao 8 (todos). Mostre as contas no caderno, não só o resultado."
+    },
+    {
+      "id": "task-2",
+      "title": "Ler capítulo 3 de Português",
+      "subject": "Português",
+      "description": "Livro de Português (capa verde), capítulo 3: \"O Sítio do Picapau Amarelo\". Ler as páginas 28 a 35 e responder as 3 perguntas do final do capítulo no caderno."
+    },
+    {
+      "id": "task-3",
+      "title": "Estudar para prova de Ciências",
+      "subject": "Ciências",
+      "description": "Prova na quinta-feira! Revisar os capítulos 4 e 5 do livro: Sistema Solar e Fases da Lua. Prestar atenção nos nomes dos planetas em ordem e nas fases da lua (nova, crescente, cheia, minguante)."
+    },
+    {
+      "id": "task-4",
+      "title": "Exercícios de Inglês (Unit 5)",
+      "subject": "Inglês",
+      "description": "Workbook de Inglês, Unit 5 \"My Daily Routine\". Completar as atividades A, B e C nas páginas 42 e 43. A atividade D é opcional (vale bônus!)."
+    },
+    {
+      "id": "task-5",
+      "title": "Resumo de História — Era Vargas",
+      "subject": "História",
+      "description": "Fazer um resumo de meia página sobre a Era Vargas (1930-1945). Incluir: quando foi, quem era Vargas, e 2 coisas importantes que aconteceram. Pode usar o livro (págs. 67-72) ou as anotações do caderno."
+    }
+  ],
+  "lessons": [
+    {
+      "id": "les-4",
+      "subject": "Ciências",
+      "topic": "Sistema Solar: planetas e órbitas",
+      "day": "Terça"
+    },
+    {
+      "id": "les-5",
+      "subject": "Matemática",
+      "topic": "Operações com frações de mesmo denominador",
+      "day": "Terça"
+    },
+    {
+      "id": "les-6",
+      "subject": "Inglês",
+      "topic": "Rotina diária: verbos de ação",
+      "day": "Terça"
+    },
+    {
+      "id": "les-7",
+      "subject": "História",
+      "topic": "Era Vargas: o Estado Novo",
+      "day": "Quarta"
+    },
+    {
+      "id": "les-8",
+      "subject": "Português",
+      "topic": "Pontuação: vírgula e ponto e vírgula",
+      "day": "Quarta"
+    },
+    {
+      "id": "les-9",
+      "subject": "Artes",
+      "topic": "Arte moderna brasileira: Tarsila do Amaral",
+      "day": "Quarta"
+    },
+    {
+      "id": "les-1781219146230",
+      "subject": "Ciências",
+      "topic": "Erosão fluvial, marinha e glacial.",
+      "day": "Segunda"
+    },
+    {
+      "id": "les-1781219166406",
+      "subject": "Educação Física",
+      "topic": "Jogos",
+      "day": "Segunda"
+    },
+    {
+      "id": "les-1781219219972",
+      "subject": "Português",
+      "topic": "Os jogos em textos de notícias e cartum",
+      "day": "Segunda"
+    },
+    {
+      "id": "les-1781219262614",
+      "subject": "História",
+      "topic": "Indigenas atualmente",
+      "day": "Quinta"
+    },
+    {
+      "id": "les-1781219280313",
+      "subject": "Inglês",
+      "topic": "Seasons and weather",
+      "day": "Quinta"
+    },
+    {
+      "id": "les-1781219311596",
+      "subject": "Matemática",
+      "topic": "Adição e Subtração de frações com denominadores diferentes",
+      "day": "Quinta"
+    },
+    {
+      "id": "les-1781219331470",
+      "subject": "História",
+      "topic": "Direito a terra",
+      "day": "Quinta"
+    },
+    {
+      "id": "les-1781219376815",
+      "subject": "Matemática",
+      "topic": "Multiplicação de uma fração por um numero / divisão",
+      "day": "Sexta"
+    }
+  ]
+}

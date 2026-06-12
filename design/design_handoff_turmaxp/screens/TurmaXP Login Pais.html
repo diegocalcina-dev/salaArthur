@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Painel dos Responsáveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50;
+    --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620;
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.5);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(90% 36% at 50% 0%, rgba(255,107,0,.12) 0%, rgba(255,107,0,0) 55%),
+      linear-gradient(180deg, #181039 0%, var(--bg) 50%);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .phone {
+    max-width:var(--maxw); margin:0 auto; min-height:100vh;
+    display:flex; flex-direction:column; padding:0 24px 30px;
+  }
+
+  /* ===== TOPO ===== */
+  .top { padding-top:64px; text-align:center; }
+  .shield {
+    width:72px; height:80px; margin:0 auto 18px; position:relative;
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:3px solid var(--ink);
+    border-radius:18px 18px 50% 50% / 18px 18px 60% 60%;
+    display:grid; place-items:center; font-size:34px;
+    box-shadow:0 6px 0 var(--orange-deep), 0 16px 30px -10px rgba(255,107,0,.5);
+  }
+  .logo { font-size:34px; }
+  .logo .t { color:var(--orange); }
+  .logo .x { color:var(--gold); }
+  .panel-label { font-size:13px; font-weight:900; color:var(--text-dim); margin-top:8px; letter-spacing:.3px; }
+
+  /* ===== FORMULÁRIO ===== */
+  .form { margin-top:42px; }
+  .field-label { font-size:11px; font-weight:900; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-faint); margin-bottom:9px; display:block; }
+  .input {
+    width:100%; background:var(--card); border:2px solid var(--border); border-radius:var(--r-md);
+    padding:15px 16px; color:#fff; font-family:inherit; font-size:16px; font-weight:700;
+  }
+  .input::placeholder { color:var(--text-faint); font-weight:600; }
+  .input:focus { outline:none; border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,107,0,.14); }
+  .field-help { font-size:12px; font-weight:700; color:var(--text-dim); margin-top:10px; line-height:1.5; }
+
+  .send-btn {
+    width:100%; min-height:56px; margin-top:22px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:16px; text-transform:uppercase; letter-spacing:.5px;
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.45);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2.5px solid var(--ink); box-shadow:var(--glow-orange);
+  }
+  .send-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--orange-deep); }
+
+  /* ===== DIVISOR ===== */
+  .or { display:flex; align-items:center; gap:12px; margin:26px 0 20px; }
+  .or .ln { flex:1; height:1.5px; background:var(--border); }
+  .or .tx { font-size:10.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--text-faint); }
+
+  /* ===== ESTADO PÓS-ENVIO ===== */
+  .sent-card {
+    background:
+      radial-gradient(120% 120% at 0% 0%, rgba(255,107,0,.14), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #241654, #1a1040);
+    border:1.5px solid var(--orange); border-radius:var(--r-lg);
+    padding:20px; text-align:center;
+    box-shadow:0 0 0 1px rgba(255,107,0,.12), var(--shadow-card);
+  }
+  .sent-ico {
+    width:60px; height:60px; margin:0 auto 13px; border-radius:50%;
+    background:rgba(255,107,0,.14); border:2px solid var(--orange);
+    display:grid; place-items:center; font-size:30px;
+    box-shadow:0 0 18px -3px rgba(255,107,0,.5);
+  }
+  .sent-title { font-weight:900; font-size:16px; }
+  .sent-title b { color:var(--orange-soft); }
+  .sent-sub { font-size:12.5px; font-weight:700; color:var(--text-dim); margin-top:7px; line-height:1.5; }
+  .resend-btn {
+    margin-top:16px; min-height:44px; padding:0 22px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:13px; color:var(--orange-soft);
+    background:transparent; border:2px solid var(--orange);
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  }
+  .resend-btn:active { background:rgba(255,107,0,.08); }
+
+  /* ===== RODAPÉ ===== */
+  .foot { margin-top:auto; padding-top:36px; text-align:center; display:flex; flex-direction:column; gap:12px; }
+  .foot-line { font-size:13px; font-weight:800; color:var(--text-dim); }
+  .foot-line b { color:var(--orange-soft); cursor:pointer; }
+  .child-link {
+    font-size:13px; font-weight:900; color:var(--text-dim); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .child-link b { color:var(--gold); }
+  .trust { font-size:10.5px; font-weight:700; color:var(--text-faint); display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Login dos Pais">
+
+  <!-- ===== TOPO ===== -->
+  <div class="top">
+    <div class="shield">🛡️</div>
+    <div class="logo display"><span class="t">Turma</span><span class="x">XP</span></div>
+    <div class="panel-label">Painel dos Responsáveis</div>
+  </div>
+
+  <!-- ===== FORMULÁRIO ===== -->
+  <div class="form">
+    <label class="field-label">Seu e-mail</label>
+    <input class="input" type="email" placeholder="voce@email.com" />
+    <p class="field-help">Vamos enviar um link mágico. Sem senha para lembrar.</p>
+
+    <button class="send-btn">Enviar link de acesso</button>
+  </div>
+
+  <!-- ===== DIVISOR ===== -->
+  <div class="or"><span class="ln"></span><span class="tx">aguardando</span><span class="ln"></span></div>
+
+  <!-- ===== ESTADO PÓS-ENVIO ===== -->
+  <div class="sent-card" data-screen-label="Link enviado">
+    <div class="sent-ico">✉️</div>
+    <div class="sent-title">Link enviado para <b>ana@email.com</b></div>
+    <div class="sent-sub">Verifique sua caixa de entrada e clique no link para acessar o painel.</div>
+    <button class="resend-btn">↻ Reenviar link</button>
+  </div>
+
+  <!-- ===== RODAPÉ ===== -->
+  <div class="foot">
+    <div class="foot-line">Primeira vez? <b>Criar conta</b></div>
+    <div class="child-link">Sou criança <b>→</b></div>
+    <div class="trust">🔒 Seus dados são privados e protegidos</div>
+  </div>
+
+</div>
+</body>
+</html>

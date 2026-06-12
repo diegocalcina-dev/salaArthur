@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Painel dos Pais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --mat:#3D7BFF; --port:#34C759; --cien:#9B59B6; --hist:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620;
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 38% at 50% -8%, #251650 0%, rgba(37,22,80,0) 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:30px; min-height:100vh; }
+
+  /* card base sóbrio */
+  .card {
+    background:var(--card);
+    border:1.5px solid var(--border);
+    border-radius:var(--r-md);
+    padding:15px;
+    box-shadow:var(--shadow-card);
+  }
+
+  /* section eyebrow informacional */
+  .eyebrow {
+    font-size:11px; font-weight:900; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-faint); display:flex; align-items:center; gap:7px; margin-bottom:11px;
+  }
+  .eyebrow .bar { width:3px; height:13px; border-radius:2px; background:var(--orange); }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.88));
+    backdrop-filter:blur(8px);
+    border-bottom:1.5px solid var(--border);
+    padding:15px 16px 13px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .burger {
+    flex-shrink:0; width:40px; height:40px; border-radius:11px;
+    background:var(--raised); border:1.5px solid var(--border);
+    display:grid; place-content:center; gap:4px; cursor:pointer;
+  }
+  .burger span { display:block; width:17px; height:2.5px; border-radius:2px; background:var(--text-dim); }
+  .greet { flex:1; min-width:0; }
+  .greet h1 { font-size:19px; font-weight:900; line-height:1.1; }
+  .greet .sub { font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:2px; }
+  .greet .sub b { color:var(--orange-soft); }
+  .notif {
+    position:relative; flex-shrink:0; width:40px; height:40px; border-radius:11px;
+    background:var(--raised); border:1.5px solid var(--border);
+    display:grid; place-items:center; font-size:18px; cursor:pointer;
+  }
+  .notif .badge {
+    position:absolute; top:-5px; right:-5px;
+    min-width:18px; height:18px; padding:0 4px; border-radius:var(--r-pill);
+    background:var(--danger); border:2px solid var(--bg-2);
+    font-size:10px; font-weight:900; color:#fff;
+    display:grid; place-items:center;
+  }
+
+  .content { padding:16px; display:flex; flex-direction:column; gap:14px; }
+
+  /* ===== STATUS DO DIA ===== */
+  .today {
+    background:linear-gradient(135deg, #241654, #1b1040);
+    border:1.5px solid var(--border);
+    border-radius:var(--r-lg);
+    padding:16px;
+    box-shadow:var(--shadow-card);
+  }
+  .today-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+  .today-head .lbl { font-family:'Anton',sans-serif; font-size:17px; letter-spacing:1px; }
+  .today-head .streak {
+    font-size:11.5px; font-weight:900; color:var(--orange-soft);
+    background:rgba(255,107,0,.12); border:1px solid rgba(255,107,0,.3);
+    padding:4px 10px; border-radius:var(--r-pill);
+  }
+  .today-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .ind {
+    background:rgba(255,255,255,.03); border:1px solid var(--border);
+    border-radius:var(--r-md); padding:12px;
+  }
+  .ind .ico { font-size:15px; }
+  .ind .big { font-family:'Anton',sans-serif; font-size:21px; margin:5px 0 3px; line-height:1; }
+  .ind .cap { font-size:10.5px; font-weight:800; color:var(--text-dim); }
+  .ind.tasks .big { color:var(--success); }
+  .ind.time .big { color:var(--gold); }
+  .mini-bar { height:7px; background:var(--bg); border-radius:var(--r-pill); overflow:hidden; margin-top:9px; border:1px solid rgba(0,0,0,.4); }
+  .mini-bar i { display:block; height:100%; border-radius:var(--r-pill); }
+  .mini-bar .green { width:50%; background:linear-gradient(90deg, #66c46a, var(--success)); box-shadow:0 0 8px rgba(76,175,80,.5); }
+  .time-sub { font-size:10.5px; font-weight:800; color:var(--text-faint); margin-top:9px; }
+
+  /* ===== SOLICITAÇÃO PENDENTE ===== */
+  .request {
+    background:
+      radial-gradient(130% 120% at 0% 0%, rgba(247,169,59,.20), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #3a2a12, #211644);
+    border:1.5px solid var(--amber);
+    border-radius:var(--r-lg);
+    padding:15px;
+    box-shadow:0 0 0 1px rgba(247,169,59,.15), var(--shadow-card);
+  }
+  .request-top { display:flex; align-items:center; gap:11px; margin-bottom:13px; }
+  .request-ico {
+    flex-shrink:0; width:42px; height:42px; border-radius:12px;
+    background:rgba(247,169,59,.18); border:1.5px solid var(--amber);
+    display:grid; place-items:center; font-size:21px;
+  }
+  .request-txt { flex:1; }
+  .request-txt .k { font-size:10.5px; font-weight:900; letter-spacing:.8px; text-transform:uppercase; color:var(--amber); }
+  .request-txt .v { font-size:14px; font-weight:800; color:#fff; margin-top:2px; }
+  .request-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .btn {
+    min-height:46px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:13.5px; letter-spacing:.3px;
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    border:1.5px solid;
+  }
+  .btn-approve { background:linear-gradient(180deg, #58bd5d, var(--success)); border-color:#2f7a33; color:#fff; box-shadow:0 4px 0 #2f7a33; }
+  .btn-approve:active { transform:translateY(3px); box-shadow:0 1px 0 #2f7a33; }
+  .btn-deny { background:var(--raised); border-color:var(--border); color:var(--text-dim); }
+  .btn-deny:active { transform:translateY(2px); }
+
+  /* ===== MISSÕES DO DIA (lista compacta) ===== */
+  .mlist { display:flex; flex-direction:column; }
+  .mrow {
+    display:flex; align-items:center; gap:11px;
+    padding:11px 2px; border-bottom:1px solid var(--border);
+  }
+  .mrow:last-of-type { border-bottom:none; }
+  .mstatus {
+    flex-shrink:0; width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center; font-size:13px; border:1.5px solid;
+  }
+  .mstatus.done { background:rgba(76,175,80,.16); border-color:var(--success); }
+  .mstatus.todo { background:rgba(184,169,217,.08); border-color:var(--text-faint); }
+  .mstatus.urgent { background:rgba(231,76,60,.16); border-color:var(--danger); }
+  .minfo { flex:1; min-width:0; }
+  .mtitle { font-weight:800; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mrow.is-done .mtitle { color:var(--text-dim); }
+  .mtime { font-size:10.5px; font-weight:700; color:var(--text-faint); margin-top:1px; }
+  .mtime .urg { color:var(--danger); font-weight:900; }
+  .mxp {
+    flex-shrink:0; font-weight:900; font-size:12px;
+    padding:4px 9px; border-radius:var(--r-pill); white-space:nowrap;
+  }
+  .mxp.earned { color:var(--success); background:rgba(76,175,80,.12); }
+  .mxp.pend { color:var(--gold); background:rgba(247,201,72,.10); border:1px solid rgba(247,201,72,.25); }
+
+  .link-btn {
+    margin-top:12px; width:100%; min-height:42px; border-radius:var(--r-pill); cursor:pointer;
+    background:rgba(255,107,0,.06); border:1.5px solid var(--orange); color:var(--orange-soft);
+    font-weight:900; font-size:12.5px; letter-spacing:.3px;
+  }
+  .link-btn:active { background:rgba(255,107,0,.13); }
+
+  /* ===== PRÓXIMA PROVA ===== */
+  .exam { border-color:var(--danger); border-width:1.5px; }
+  .exam-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10.5px; font-weight:900; letter-spacing:.5px; text-transform:uppercase;
+    color:#fff; background:var(--danger); border:1.5px solid var(--ink);
+    border-radius:var(--r-pill); padding:4px 11px;
+    box-shadow:0 0 10px -2px rgba(231,76,60,.6);
+  }
+  .exam-title { font-weight:900; font-size:16px; margin:11px 0 3px; }
+  .exam-note { font-size:12px; font-weight:700; color:var(--text-dim); display:flex; align-items:center; gap:6px; }
+  .exam-note .warn { color:var(--amber); }
+
+  /* ===== RESUMO DA SEMANA ===== */
+  .week-head { display:flex; align-items:center; justify-content:space-between; }
+  .week-rank {
+    font-size:11.5px; font-weight:900; color:var(--text-dim);
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .week-rank b { color:#fff; }
+  .week-rank .up { color:var(--success); }
+  .chart {
+    display:grid; grid-template-columns:repeat(5,1fr); gap:9px; align-items:end;
+    height:92px; margin:14px 0 6px; padding:0 2px;
+  }
+  .bar { display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
+  .bar .col {
+    width:100%; max-width:30px; border-radius:7px 7px 3px 3px;
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:1.5px solid var(--ink);
+    box-shadow:0 0 10px -3px rgba(255,107,0,.6);
+    position:relative;
+  }
+  .bar.today-bar .col { background:linear-gradient(180deg, #FFDC74, var(--gold)); box-shadow:0 0 12px -2px rgba(247,201,72,.7); }
+  .bar.empty .col { background:var(--raised); box-shadow:none; border-color:var(--border); }
+  .bar .d { font-size:10px; font-weight:900; color:var(--text-faint); }
+  .bar.today-bar .d { color:var(--gold); }
+  .bar .n { position:absolute; top:-16px; left:0; right:0; text-align:center; font-size:10px; font-weight:900; color:var(--text-dim); }
+
+  /* ===== AÇÕES RÁPIDAS ===== */
+  .actions-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .action {
+    background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md);
+    padding:15px 13px; cursor:pointer; text-align:left;
+    display:flex; align-items:center; gap:11px;
+    transition:border-color .15s, transform .1s;
+  }
+  .action:active { transform:scale(.97); }
+  .action .ai {
+    width:38px; height:38px; border-radius:11px; flex-shrink:0;
+    display:grid; place-items:center; font-size:19px; border:1.5px solid var(--ink);
+  }
+  .action.a1 { } .action.a1 .ai { background:rgba(255,107,0,.16); border-color:var(--orange); }
+  .action.a2 .ai { background:rgba(231,76,60,.16); border-color:var(--danger); }
+  .action.a3 .ai { background:rgba(61,123,255,.16); border-color:var(--mat); }
+  .action.a4 .ai { background:rgba(247,201,72,.16); border-color:var(--gold); }
+  .action .at { font-weight:900; font-size:13px; line-height:1.15; }
+  .action:active { border-color:var(--orange); }
+
+  .footer-brand {
+    text-align:center; color:var(--text-faint); font-size:10.5px; font-weight:800;
+    margin-top:6px; letter-spacing:.3px;
+  }
+  .footer-brand b { color:var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Dashboard Pais">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="greet">
+      <h1>Oi, Ana 👋</h1>
+      <div class="sub">Painel de <b>Naruto</b> • Hoje, segunda-feira</div>
+    </div>
+    <button class="notif" aria-label="Notificações">🔔<span class="badge">2</span></button>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== STATUS DO DIA ===== -->
+    <section class="today" data-screen-label="Status do dia">
+      <div class="today-head">
+        <span class="lbl display">Hoje</span>
+        <span class="streak">🔥 Streak: 12 dias</span>
+      </div>
+      <div class="today-grid">
+        <div class="ind tasks">
+          <div class="ico">✅</div>
+          <div class="big num">2 / 4</div>
+          <div class="cap">missões feitas</div>
+          <div class="mini-bar"><i class="green"></i></div>
+        </div>
+        <div class="ind time">
+          <div class="ico">🕐</div>
+          <div class="big num">47 min</div>
+          <div class="cap">no banco de tempo</div>
+          <div class="time-sub">↳ disponível para resgate</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SOLICITAÇÃO PENDENTE ===== -->
+    <section class="request" data-screen-label="Solicitação pendente">
+      <div class="request-top">
+        <div class="request-ico">⏳</div>
+        <div class="request-txt">
+          <div class="k">Solicitação pendente</div>
+          <div class="v">Naruto quer usar 30 min de YouTube</div>
+        </div>
+      </div>
+      <div class="request-actions">
+        <button class="btn btn-approve">✅ Aprovar</button>
+        <button class="btn btn-deny">❌ Recusar</button>
+      </div>
+    </section>
+
+    <!-- ===== MISSÕES DO DIA ===== -->
+    <section class="card" data-screen-label="Missões do dia">
+      <div class="eyebrow"><span class="bar"></span>Missões do dia</div>
+      <div class="mlist">
+        <div class="mrow is-done">
+          <span class="mstatus done">✅</span>
+          <div class="minfo">
+            <div class="mtitle">Lição de Ciências</div>
+            <div class="mtime">Feita às 15h30</div>
+          </div>
+          <span class="mxp earned">+15 XP</span>
+        </div>
+        <div class="mrow is-done">
+          <span class="mstatus done">✅</span>
+          <div class="minfo">
+            <div class="mtitle">Resumo de História</div>
+            <div class="mtime">Feita às 16h10</div>
+          </div>
+          <span class="mxp earned">+10 XP</span>
+        </div>
+        <div class="mrow">
+          <span class="mstatus todo">⏳</span>
+          <div class="minfo">
+            <div class="mtitle">Lição de frações</div>
+            <div class="mtime">Pendente</div>
+          </div>
+          <span class="mxp pend">10 XP</span>
+        </div>
+        <div class="mrow">
+          <span class="mstatus urgent">⚠️</span>
+          <div class="minfo">
+            <div class="mtitle">Revisar verbos</div>
+            <div class="mtime"><span class="urg">URGENTE</span> • prova em 2 dias</div>
+          </div>
+          <span class="mxp pend">30 XP</span>
+        </div>
+      </div>
+      <button class="link-btn">Gerenciar missões →</button>
+    </section>
+
+    <!-- ===== PRÓXIMA PROVA ===== -->
+    <section class="card exam" data-screen-label="Próxima prova">
+      <span class="exam-badge">📅 Prova em 2 dias</span>
+      <div class="exam-title">Português — quinta, 12 de junho</div>
+      <div class="exam-note"><span class="warn">⚠️</span> Naruto ainda não fez a revisão</div>
+    </section>
+
+    <!-- ===== RESUMO DA SEMANA ===== -->
+    <section class="card" data-screen-label="Resumo da semana">
+      <div class="week-head">
+        <div class="eyebrow" style="margin-bottom:0;"><span class="bar"></span>Semana atual</div>
+        <span class="week-rank">Ranking <b>#4</b> <span class="up">▲1</span></span>
+      </div>
+      <div class="chart">
+        <div class="bar"><div class="col" style="height:55%"><span class="n">3</span></div><span class="d">SEG</span></div>
+        <div class="bar"><div class="col" style="height:75%"><span class="n">4</span></div><span class="d">TER</span></div>
+        <div class="bar"><div class="col" style="height:40%"><span class="n">2</span></div><span class="d">QUA</span></div>
+        <div class="bar today-bar"><div class="col" style="height:50%"><span class="n">2</span></div><span class="d">QUI</span></div>
+        <div class="bar empty"><div class="col" style="height:14%"></div><span class="d">SEX</span></div>
+      </div>
+      <button class="link-btn">Ver relatório completo →</button>
+    </section>
+
+    <!-- ===== AÇÕES RÁPIDAS ===== -->
+    <section data-screen-label="Ações rápidas">
+      <div class="eyebrow"><span class="bar"></span>Ações rápidas</div>
+      <div class="actions-grid">
+        <button class="action a1"><span class="ai">➕</span><span class="at">Nova<br />missão</span></button>
+        <button class="action a2"><span class="ai">📅</span><span class="at">Adicionar<br />prova</span></button>
+        <button class="action a3"><span class="ai">🎮</span><span class="at">Configurar<br />apps</span></button>
+        <button class="action a4"><span class="ai">📊</span><span class="at">Relatório<br />completo</span></button>
+      </div>
+    </section>
+
+    <div class="footer-brand"><b>TurmaXP</b> · Painel dos Pais</div>
+
+  </div>
+
+</div>
+</body>
+</html>

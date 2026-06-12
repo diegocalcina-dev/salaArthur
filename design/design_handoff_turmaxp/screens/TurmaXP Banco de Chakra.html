@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Banco de Chakra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620; --outline:2.5px solid var(--ink);
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 42% at 50% -6%, #2f1c5a 0%, rgba(47,28,90,0) 58%),
+      radial-gradient(80% 36% at 50% 22%, rgba(255,107,0,.10) 0%, rgba(255,107,0,0) 60%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:84px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.85));
+    backdrop-filter:blur(8px);
+    border-bottom:1.5px solid var(--border);
+    padding:14px 16px; display:flex; align-items:center; gap:12px;
+  }
+  .back {
+    flex-shrink:0; width:40px; height:40px; border-radius:11px;
+    background:var(--raised); border:1.5px solid var(--border);
+    display:grid; place-items:center; font-size:20px; color:#fff; cursor:pointer;
+  }
+  .h-mid { flex:1; min-width:0; }
+  .h-title { font-size:21px; color:#fff; }
+  .h-sub { font-size:11px; font-weight:800; color:var(--text-dim); margin-top:2px; }
+
+  .content { padding:16px; display:flex; flex-direction:column; gap:18px; }
+
+  /* ===== SALDO PRINCIPAL ===== */
+  .balance {
+    position:relative; overflow:hidden;
+    border-radius:var(--r-lg); border:2.5px solid var(--orange);
+    background:
+      radial-gradient(120% 130% at 50% 0%, rgba(255,107,0,.28), rgba(20,12,46,0) 60%),
+      linear-gradient(160deg, #2a1850, #160d36);
+    padding:22px 18px 18px; text-align:center;
+    box-shadow:0 0 0 1px rgba(255,107,0,.2), 0 14px 30px -14px rgba(255,107,0,.45);
+  }
+  .balance::before {
+    content:""; position:absolute; inset:0; z-index:0;
+    background:repeating-linear-gradient(115deg, rgba(255,107,0,.07) 0 10px, transparent 10px 22px);
+    -webkit-mask-image:radial-gradient(70% 80% at 50% 0%, #000, transparent 75%);
+            mask-image:radial-gradient(70% 80% at 50% 0%, #000, transparent 75%);
+  }
+  .balance > * { position:relative; z-index:1; }
+  .bal-chip {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:10.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase;
+    color:var(--gold); background:rgba(247,201,72,.12); border:1px solid rgba(247,201,72,.3);
+    padding:4px 12px; border-radius:var(--r-pill);
+  }
+  .bal-num {
+    font-family:'Anton',sans-serif; font-size:84px; line-height:.86; color:#fff;
+    margin:12px 0 2px; letter-spacing:1px;
+    -webkit-text-stroke:2.5px var(--ink); paint-order:stroke fill;
+    filter:drop-shadow(0 4px 0 var(--orange-deep)) drop-shadow(0 8px 16px rgba(255,107,0,.5));
+  }
+  .bal-num small { font-size:26px; -webkit-text-stroke:1.5px var(--ink); color:var(--orange-soft); }
+  .bal-cap { font-size:13px; font-weight:900; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; }
+
+  .use-bar-wrap { margin-top:18px; text-align:left; }
+  .use-bar-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .use-bar-head .l { font-size:11px; font-weight:900; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; }
+  .use-bar-head .v { font-size:11.5px; font-weight:900; color:var(--orange-soft); }
+  .use-bar { height:18px; background:var(--bg); border:2.5px solid var(--ink); border-radius:var(--r-pill); overflow:hidden; box-shadow:inset 0 2px 6px rgba(0,0,0,.6); position:relative; }
+  .use-bar i {
+    display:block; height:100%; width:38%; border-radius:var(--r-pill);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    box-shadow:0 0 12px 1px rgba(255,107,0,.7); position:relative; overflow:hidden;
+  }
+  .use-bar i::after {
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(115deg, rgba(255,255,255,.22) 0 5px, transparent 5px 13px);
+  }
+
+  /* ===== SEÇÃO TITULOS ===== */
+  .sec-head { display:flex; align-items:center; gap:10px; margin-bottom:13px; }
+  .sec-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:18px; letter-spacing:.5px; color:#fff; white-space:nowrap; }
+  .sec-line { flex:1; height:3px; border-radius:var(--r-pill); background:repeating-linear-gradient(115deg, rgba(255,107,0,.5) 0 7px, transparent 7px 13px); }
+
+  /* ===== APPS GRID ===== */
+  .apps { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .app {
+    background:linear-gradient(180deg, var(--raised), var(--card));
+    border:2px solid var(--border); border-radius:var(--r-lg);
+    padding:14px; box-shadow:var(--shadow-card);
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:9px;
+  }
+  .app.ok { border-color:rgba(255,107,0,.5); }
+  .app.locked { opacity:.92; }
+  .app-ico {
+    width:54px; height:54px; border-radius:14px; border:2.5px solid var(--ink);
+    display:grid; place-items:center; font-size:24px; color:#fff; flex-shrink:0;
+    box-shadow:0 4px 0 rgba(0,0,0,.35);
+  }
+  .ico-yt { background:linear-gradient(180deg,#ff4242,#cc0000); }
+  .ico-yt .play { width:0;height:0;border-style:solid;border-width:8px 0 8px 14px;border-color:transparent transparent transparent #fff; margin-left:3px; }
+  .ico-brawl { background:linear-gradient(150deg,#7b5cff,#3b2bd4); }
+  .ico-roblox { background:linear-gradient(150deg,#3d4452,#1d2230); }
+  .ico-spotify { background:linear-gradient(150deg,#1ed760,#0f8a3d); }
+  .app-name { font-weight:900; font-size:15px; }
+  .app-cost {
+    font-weight:900; font-size:12.5px; color:var(--gold);
+    display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
+    background:rgba(247,201,72,.10); border:1px solid rgba(247,201,72,.25);
+    padding:4px 11px; border-radius:var(--r-pill);
+  }
+  .app-name { min-height:19px; }
+  .app-btn {
+    width:100%; min-height:44px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:13px; text-transform:uppercase; letter-spacing:.4px;
+    border:2.5px solid var(--ink); margin-top:2px;
+  }
+  .app-btn.active {
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    box-shadow:var(--glow-orange);
+  }
+  .app-btn.active:active { transform:translateY(3px); box-shadow:0 2px 0 var(--orange-deep); }
+  .app-btn.disabled {
+    background:var(--raised); border-color:var(--border); color:var(--text-faint);
+    cursor:not-allowed; font-size:11.5px;
+  }
+
+  /* ===== SOLICITAÇÃO PENDENTE ===== */
+  .pending {
+    position:relative; overflow:hidden;
+    border-radius:var(--r-lg); border:2px solid var(--amber);
+    background:
+      radial-gradient(130% 120% at 0% 0%, rgba(247,169,59,.22), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #3a2a12, #1e1442);
+    padding:15px;
+    display:flex; align-items:center; gap:13px;
+    box-shadow:0 0 0 1px rgba(247,169,59,.15), var(--shadow-card);
+  }
+  .pending-ico {
+    flex-shrink:0; width:46px; height:46px; border-radius:13px;
+    background:rgba(247,169,59,.18); border:2px solid var(--amber);
+    display:grid; place-items:center; font-size:23px;
+    animation:wobble 2.4s ease-in-out infinite;
+  }
+  @keyframes wobble { 0%,100%{ transform:rotate(-6deg);} 50%{ transform:rotate(6deg);} }
+  .pending-body { flex:1; min-width:0; }
+  .pending-k { font-size:10.5px; font-weight:900; letter-spacing:.6px; text-transform:uppercase; color:var(--amber); }
+  .pending-v { font-weight:900; font-size:15px; color:#fff; margin:2px 0; }
+  .pending-s { font-size:11.5px; font-weight:800; color:var(--text-dim); display:inline-flex; align-items:center; gap:6px; }
+  .dots-anim { display:inline-flex; gap:3px; }
+  .dots-anim i { width:5px;height:5px;border-radius:50%;background:var(--amber); animation:dot 1.2s infinite; }
+  .dots-anim i:nth-child(2){ animation-delay:.2s; } .dots-anim i:nth-child(3){ animation-delay:.4s; }
+  @keyframes dot { 0%,60%,100%{ opacity:.3;} 30%{ opacity:1;} }
+
+  /* ===== HISTÓRICO ===== */
+  .history { background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md); padding:6px 14px; }
+  .hist-head { display:flex; align-items:center; justify-content:space-between; padding:9px 0; cursor:pointer; }
+  .hist-head .t { font-size:11.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); }
+  .hist-head .chev { color:var(--text-faint); font-size:13px; }
+  .hist-list { border-top:1px solid var(--border); }
+  .hrow { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
+  .hrow:last-child { border-bottom:none; }
+  .hrow .hi { width:30px; height:30px; border-radius:9px; border:1.5px solid var(--ink); display:grid; place-items:center; font-size:13px; flex-shrink:0; color:#fff; }
+  .hrow .hinfo { flex:1; }
+  .hrow .hname { font-weight:900; font-size:13px; }
+  .hrow .hmeta { font-size:10.5px; font-weight:700; color:var(--text-faint); margin-top:1px; }
+  .hrow .htime { font-weight:900; font-size:12px; color:var(--text-dim); }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg,#241552,#160D34);
+    border-top:2.5px solid var(--border);
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.8);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom)); z-index:40;
+  }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-size:10px; font-weight:900; color:var(--text-faint); border:none; background:none; border-radius:var(--r-md); }
+  .nav-item .ico { font-size:21px; line-height:1; filter:grayscale(.4) opacity(.7); transition:.15s; }
+  .nav-item.active { color:var(--orange-soft); }
+  .nav-item.active .ico { filter:none; transform:translateY(-1px); text-shadow:0 0 14px rgba(255,107,0,.8); }
+  .nav-item.active::after { content:""; width:22px; height:4px; border-radius:var(--r-pill); background:var(--orange); box-shadow:0 0 10px -1px var(--orange); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Banco de Chakra">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <button class="back" aria-label="Voltar">←</button>
+    <div class="h-mid">
+      <div class="h-title display">Banco de Chakra</div>
+      <div class="h-sub">Conclua missões para acumular tempo</div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== SALDO ===== -->
+    <section class="balance" data-screen-label="Saldo de chakra">
+      <span class="bal-chip">⚡ Chakra acumulado</span>
+      <div class="bal-num num">47<small>min</small></div>
+      <div class="bal-cap">disponíveis agora</div>
+      <div class="use-bar-wrap">
+        <div class="use-bar-head">
+          <span class="l">Uso de hoje</span>
+          <span class="v">23 de 60 min usados</span>
+        </div>
+        <div class="use-bar"><i></i></div>
+      </div>
+    </section>
+
+    <!-- ===== APPS ===== -->
+    <section data-screen-label="Apps disponíveis">
+      <div class="sec-head">
+        <span class="sec-title">Escolha seu poder</span>
+        <span class="sec-line"></span>
+      </div>
+      <div class="apps">
+
+        <!-- YouTube -->
+        <div class="app ok">
+          <div class="app-ico ico-yt"><span class="play"></span></div>
+          <div class="app-name">YouTube</div>
+          <div class="app-cost">🕐 30 min</div>
+          <button class="app-btn active">Solicitar</button>
+        </div>
+
+        <!-- Brawl Stars (insuficiente) -->
+        <div class="app locked">
+          <div class="app-ico ico-brawl">🎮</div>
+          <div class="app-name">Brawl Stars</div>
+          <div class="app-cost">🕐 45 min</div>
+          <button class="app-btn disabled">🔒 Faltam 2 min</button>
+        </div>
+
+        <!-- Roblox -->
+        <div class="app ok">
+          <div class="app-ico ico-roblox">🟦</div>
+          <div class="app-name">Roblox</div>
+          <div class="app-cost">🕐 30 min</div>
+          <button class="app-btn active">Solicitar</button>
+        </div>
+
+        <!-- Spotify -->
+        <div class="app ok">
+          <div class="app-ico ico-spotify">♪</div>
+          <div class="app-name">Spotify</div>
+          <div class="app-cost">🕐 15 min</div>
+          <button class="app-btn active">Solicitar</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== SOLICITAÇÃO PENDENTE ===== -->
+    <section class="pending" data-screen-label="Solicitação pendente">
+      <div class="pending-ico">⏳</div>
+      <div class="pending-body">
+        <div class="pending-k">Solicitação enviada para mamãe</div>
+        <div class="pending-v">YouTube — 30 min</div>
+        <div class="pending-s">Aguardando aprovação<span class="dots-anim"><i></i><i></i><i></i></span></div>
+      </div>
+    </section>
+
+    <!-- ===== HISTÓRICO ===== -->
+    <section class="history" data-screen-label="Histórico de hoje">
+      <div class="hist-head">
+        <span class="t">Histórico de hoje</span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="hist-list">
+        <div class="hrow">
+          <span class="hi ico-yt"><span style="font-size:11px;">▶</span></span>
+          <div class="hinfo">
+            <div class="hname">YouTube</div>
+            <div class="hmeta">30 min usados</div>
+          </div>
+          <span class="htime">14h22</span>
+        </div>
+        <div class="hrow">
+          <span class="hi ico-brawl">🎮</span>
+          <div class="hinfo">
+            <div class="hname">Brawl Stars</div>
+            <div class="hmeta">45 min usados</div>
+          </div>
+          <span class="htime">11h05</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <button class="nav-item"><span class="ico">🏠</span>Home</button>
+    <button class="nav-item"><span class="ico">🏆</span>Ranking</button>
+    <button class="nav-item"><span class="ico">👤</span>Perfil</button>
+    <button class="nav-item"><span class="ico">💬</span>Turma</button>
+  </nav>
+
+</div>
+</body>
+</html>

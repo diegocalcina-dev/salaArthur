@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Configurar Recompensas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620;
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    background:radial-gradient(120% 38% at 50% -8%, #251650 0%, rgba(37,22,80,0) 60%), var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:30px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.88));
+    backdrop-filter:blur(8px); border-bottom:1.5px solid var(--border);
+    padding:13px 14px; display:flex; align-items:center; gap:10px;
+  }
+  .back { flex-shrink:0; width:38px; height:38px; border-radius:11px; background:var(--raised); border:1.5px solid var(--border); display:grid; place-items:center; font-size:19px; color:#fff; cursor:pointer; }
+  .h-title { font-size:16px; color:#fff; }
+
+  .content { padding:16px; display:flex; flex-direction:column; gap:20px; }
+
+  .eyebrow { font-size:11px; font-weight:900; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .eyebrow .bar { width:3px; height:13px; border-radius:2px; background:var(--orange); }
+  .sub-explain { font-size:11.5px; font-weight:700; color:var(--text-dim); line-height:1.45; margin-bottom:12px; }
+
+  .card { background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md); padding:15px; box-shadow:var(--shadow-card); }
+
+  /* ===== TETO DIÁRIO ===== */
+  .limit-display {
+    text-align:center; margin:6px 0 14px;
+  }
+  .limit-display .v { font-family:'Anton',sans-serif; font-size:46px; color:var(--orange-soft); line-height:1; }
+  .limit-display .v small { font-size:18px; color:var(--text-dim); }
+  .seg {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:7px;
+    background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-pill); padding:5px;
+  }
+  .seg-opt {
+    text-align:center; font-weight:900; font-size:13px; color:var(--text-dim);
+    padding:9px 0; border-radius:var(--r-pill); cursor:pointer;
+  }
+  .seg-opt.active { color:#fff; background:linear-gradient(180deg, var(--orange-soft), var(--orange)); box-shadow:0 3px 0 var(--orange-deep); }
+
+  /* ===== APP CARDS ===== */
+  .app-card {
+    background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md);
+    padding:13px 14px; box-shadow:var(--shadow-card);
+  }
+  .app-card.paused { opacity:.72; }
+  .app-row { display:flex; align-items:center; gap:12px; }
+  .app-ico {
+    flex-shrink:0; width:46px; height:46px; border-radius:13px; border:2.5px solid var(--ink);
+    display:grid; place-items:center; font-size:21px; color:#fff;
+  }
+  .ico-yt { background:linear-gradient(180deg,#ff4242,#cc0000); }
+  .ico-yt .play { width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff; margin-left:2px; }
+  .ico-brawl { background:linear-gradient(150deg,#7b5cff,#3b2bd4); }
+  .ico-roblox { background:linear-gradient(150deg,#3d4452,#1d2230); }
+  .app-main { flex:1; min-width:0; }
+  .app-name { font-weight:900; font-size:15px; }
+  .app-cost-label { font-size:11px; font-weight:700; color:var(--text-faint); margin-top:1px; }
+  .paused-reason { font-size:10.5px; font-weight:900; color:var(--amber); margin-top:3px; }
+
+  /* toggle */
+  .toggle { flex-shrink:0; width:50px; height:28px; border-radius:var(--r-pill); border:2px solid var(--ink); position:relative; cursor:pointer; transition:background .2s; }
+  .toggle.on { background:linear-gradient(180deg,#58bd5d,var(--success)); }
+  .toggle.off { background:var(--raised); }
+  .toggle .knob { position:absolute; top:2px; width:20px; height:20px; border-radius:50%; background:#fff; border:1.5px solid var(--ink); transition:left .2s; }
+  .toggle.on .knob { left:26px; }
+  .toggle.off .knob { left:2px; }
+
+  /* cost stepper inline */
+  .app-config { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; padding-top:11px; border-top:1px solid var(--border); }
+  .cost-stepper { display:flex; align-items:center; gap:9px; }
+  .cost-stepper .lab { font-size:11px; font-weight:800; color:var(--text-dim); }
+  .step-btn {
+    width:32px; height:32px; border-radius:9px; display:grid; place-items:center;
+    background:var(--raised); border:1.5px solid var(--border); color:var(--orange-soft);
+    font-size:17px; font-weight:900; cursor:pointer;
+  }
+  .step-btn:active { transform:scale(.9); }
+  .cost-val { font-family:'Anton',sans-serif; font-size:17px; color:#fff; min-width:58px; text-align:center; }
+  .cost-val small { font-size:11px; color:var(--text-dim); }
+  .del-btn { width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:rgba(231,76,60,.08); border:1.5px solid rgba(231,76,60,.4); color:var(--danger); font-size:15px; cursor:pointer; }
+
+  .add-btn {
+    width:100%; min-height:48px; border-radius:var(--r-md); cursor:pointer;
+    font-weight:900; font-size:13px; color:var(--orange-soft);
+    background:transparent; border:2px dashed var(--orange);
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .add-btn:active { background:rgba(255,107,0,.06); }
+
+  .stack { display:flex; flex-direction:column; gap:11px; }
+
+  /* ===== PRÊMIOS FÍSICOS ===== */
+  .prize-card { display:flex; align-items:center; gap:12px; background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-md); padding:12px 14px; box-shadow:var(--shadow-card); }
+  .prize-ico { flex-shrink:0; width:44px; height:44px; border-radius:13px; border:2px solid var(--ink); display:grid; place-items:center; font-size:22px; background:rgba(247,201,72,.1); }
+  .prize-main { flex:1; min-width:0; }
+  .prize-name { font-weight:900; font-size:14.5px; }
+  .prize-cost { font-size:12px; font-weight:900; color:var(--xp); margin-top:1px; display:inline-flex; align-items:center; gap:4px; }
+  .prize-actions { display:flex; align-items:center; gap:8px; }
+  .mini-act { width:32px; height:32px; border-radius:9px; display:grid; place-items:center; background:var(--raised); border:1.5px solid var(--border); color:var(--text-dim); font-size:13px; cursor:pointer; }
+
+  /* ===== APROVAÇÃO MANUAL ===== */
+  .approval {
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba(255,107,0,.12), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #241654, #1a1040);
+    border:1.5px solid var(--orange); border-radius:var(--r-md); padding:15px;
+    box-shadow:0 0 0 1px rgba(255,107,0,.12), var(--shadow-card);
+  }
+  .approval-top { display:flex; align-items:flex-start; gap:12px; }
+  .approval-main { flex:1; }
+  .approval-title { font-weight:900; font-size:14.5px; line-height:1.3; }
+  .approval-rec { font-size:10px; font-weight:900; color:var(--success); text-transform:uppercase; letter-spacing:.5px; margin-top:3px; }
+  .approval-explain { font-size:11.5px; font-weight:700; color:var(--text-dim); margin-top:11px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Configurar Recompensas">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <button class="back">←</button>
+    <h1 class="h-title display">Configurar Recompensas</h1>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== TETO DIÁRIO ===== -->
+    <section data-screen-label="Teto diário">
+      <div class="eyebrow"><span class="bar"></span>Limite diário de tela</div>
+      <p class="sub-explain">Mesmo que Naruto tenha mais minutos no banco, ele não pode usar mais que esse limite por dia.</p>
+      <div class="card">
+        <div class="limit-display"><span class="v num">60<small> min</small></span></div>
+        <div class="seg">
+          <span class="seg-opt">30 min</span>
+          <span class="seg-opt active">60 min</span>
+          <span class="seg-opt">90 min</span>
+          <span class="seg-opt">120</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== APPS ===== -->
+    <section data-screen-label="Apps disponíveis">
+      <div class="eyebrow"><span class="bar"></span>Apps que Naruto pode desbloquear</div>
+      <div class="stack">
+
+        <!-- YouTube -->
+        <div class="app-card">
+          <div class="app-row">
+            <div class="app-ico ico-yt"><span class="play"></span></div>
+            <div class="app-main">
+              <div class="app-name">YouTube</div>
+              <div class="app-cost-label">Custo por uso</div>
+            </div>
+            <div class="toggle on"><span class="knob"></span></div>
+          </div>
+          <div class="app-config">
+            <div class="cost-stepper">
+              <button class="step-btn">−</button>
+              <span class="cost-val num">30<small> min</small></span>
+              <button class="step-btn">+</button>
+            </div>
+            <button class="del-btn">🗑️</button>
+          </div>
+        </div>
+
+        <!-- Brawl Stars -->
+        <div class="app-card">
+          <div class="app-row">
+            <div class="app-ico ico-brawl">🎮</div>
+            <div class="app-main">
+              <div class="app-name">Brawl Stars</div>
+              <div class="app-cost-label">Custo por uso</div>
+            </div>
+            <div class="toggle on"><span class="knob"></span></div>
+          </div>
+          <div class="app-config">
+            <div class="cost-stepper">
+              <button class="step-btn">−</button>
+              <span class="cost-val num">45<small> min</small></span>
+              <button class="step-btn">+</button>
+            </div>
+            <button class="del-btn">🗑️</button>
+          </div>
+        </div>
+
+        <!-- Roblox (pausado) -->
+        <div class="app-card paused">
+          <div class="app-row">
+            <div class="app-ico ico-roblox">🟦</div>
+            <div class="app-main">
+              <div class="app-name">Roblox</div>
+              <div class="app-cost-label">Custo por uso</div>
+              <div class="paused-reason">⏸️ Pausado até sexta</div>
+            </div>
+            <div class="toggle off"><span class="knob"></span></div>
+          </div>
+          <div class="app-config">
+            <div class="cost-stepper">
+              <button class="step-btn">−</button>
+              <span class="cost-val num">30<small> min</small></span>
+              <button class="step-btn">+</button>
+            </div>
+            <button class="del-btn">🗑️</button>
+          </div>
+        </div>
+
+        <button class="add-btn">➕ Adicionar app</button>
+      </div>
+    </section>
+
+    <!-- ===== PRÊMIOS FÍSICOS ===== -->
+    <section data-screen-label="Prêmios especiais">
+      <div class="eyebrow"><span class="bar"></span>Prêmios especiais</div>
+      <p class="sub-explain">Naruto pode trocar XP por esses prêmios.</p>
+      <div class="stack">
+
+        <div class="prize-card">
+          <div class="prize-ico">🍦</div>
+          <div class="prize-main">
+            <div class="prize-name">Sorvete</div>
+            <div class="prize-cost">⭐ 500 XP</div>
+          </div>
+          <div class="prize-actions">
+            <div class="toggle on"><span class="knob"></span></div>
+            <button class="mini-act">✏️</button>
+          </div>
+        </div>
+
+        <div class="prize-card">
+          <div class="prize-ico">🎮</div>
+          <div class="prize-main">
+            <div class="prize-name">Jogar 1h com o pai</div>
+            <div class="prize-cost">⭐ 300 XP</div>
+          </div>
+          <div class="prize-actions">
+            <div class="toggle on"><span class="knob"></span></div>
+            <button class="mini-act">✏️</button>
+          </div>
+        </div>
+
+        <div class="prize-card">
+          <div class="prize-ico">🍕</div>
+          <div class="prize-main">
+            <div class="prize-name">Pizza no fim de semana</div>
+            <div class="prize-cost">⭐ 800 XP</div>
+          </div>
+          <div class="prize-actions">
+            <div class="toggle on"><span class="knob"></span></div>
+            <button class="mini-act">✏️</button>
+          </div>
+        </div>
+
+        <button class="add-btn">➕ Adicionar prêmio</button>
+      </div>
+    </section>
+
+    <!-- ===== APROVAÇÃO MANUAL ===== -->
+    <section class="approval" data-screen-label="Aprovação manual">
+      <div class="approval-top">
+        <div class="approval-main">
+          <div class="approval-title">Exigir minha aprovação para cada desbloqueio</div>
+          <div class="approval-rec">✓ Recomendado</div>
+        </div>
+        <div class="toggle on"><span class="knob"></span></div>
+      </div>
+      <p class="approval-explain">Naruto vai me enviar uma solicitação. Eu aprovarei pelo painel antes de qualquer tempo de tela ser liberado.</p>
+    </section>
+
+  </div>
+
+</div>
+</body>
+</html>

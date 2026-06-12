@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Carta da Semana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --wa:#25D366; --wa-deep:#128C3E;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620; --outline:2.5px solid var(--ink);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 40% at 50% -6%, #321d5e 0%, rgba(50,29,94,0) 58%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:84px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.85));
+    backdrop-filter:blur(8px); border-bottom:1.5px solid var(--border);
+    padding:14px 16px; text-align:center;
+  }
+  .h-title { font-size:21px; color:#fff; }
+  .h-sub { font-size:11px; font-weight:800; color:var(--text-dim); margin-top:3px; }
+
+  .content { padding:18px 16px; display:flex; flex-direction:column; gap:18px; }
+
+  /* ===== A CARTA ===== */
+  .carta {
+    position:relative; overflow:hidden;
+    border:3px solid var(--gold); border-radius:24px;
+    background:
+      radial-gradient(90% 55% at 50% 0%, rgba(255,107,0,.30), rgba(20,12,46,0) 55%),
+      radial-gradient(70% 50% at 50% 100%, rgba(247,201,72,.12), rgba(20,12,46,0) 60%),
+      linear-gradient(165deg, #2a1850 0%, #160d36 60%, #1d1142 100%);
+    box-shadow:0 0 0 1px rgba(247,201,72,.25), 0 18px 40px -16px rgba(247,201,72,.4), 0 10px 30px -12px rgba(0,0,0,.8);
+    padding:18px 18px 16px;
+  }
+  /* elementos ninja decorativos sutis */
+  .carta::before {
+    content:""; position:absolute; inset:0; z-index:0;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,107,0,.05) 0 12px, transparent 12px 26px);
+    -webkit-mask-image:radial-gradient(80% 70% at 50% 30%, #000, transparent 80%);
+            mask-image:radial-gradient(80% 70% at 50% 30%, #000, transparent 80%);
+  }
+  .leaf {
+    position:absolute; font-size:120px; opacity:.05; z-index:0; pointer-events:none;
+    filter:grayscale(1);
+  }
+  .leaf.l1 { top:-20px; right:-18px; transform:rotate(18deg); }
+  .leaf.l2 { bottom:50px; left:-30px; transform:rotate(-22deg); font-size:96px; }
+  .carta > * { position:relative; z-index:1; }
+
+  /* topo da carta */
+  .carta-top { display:flex; align-items:center; justify-content:space-between; }
+  .carta-logo { font-family:'Anton',sans-serif; font-size:15px; letter-spacing:.5px; }
+  .carta-logo .x { color:var(--gold); }
+  .carta-logo .t { color:var(--orange); }
+  .carta-week {
+    font-size:10px; font-weight:900; letter-spacing:.5px; text-transform:uppercase; color:var(--text-dim);
+    background:rgba(255,255,255,.05); border:1px solid var(--border);
+    padding:4px 10px; border-radius:var(--r-pill);
+  }
+
+  /* avatar central */
+  .carta-hero { text-align:center; margin-top:14px; }
+  .carta-av {
+    width:92px; height:92px; margin:0 auto; border-radius:50%; padding:3.5px; position:relative;
+    background:conic-gradient(from 0deg, var(--gold), #fff, var(--orange), var(--gold));
+    box-shadow:0 0 22px 1px rgba(247,201,72,.7), 0 0 44px 3px rgba(255,107,0,.3);
+  }
+  .carta-av .face {
+    width:100%; height:100%; border-radius:50%;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 7px, var(--card) 7px 14px);
+    border:3px solid var(--ink); display:grid; place-items:center; font-size:46px;
+  }
+  .carta-name { font-weight:900; font-size:21px; margin-top:11px; }
+  .carta-role {
+    display:inline-flex; align-items:center; gap:7px; margin-top:9px;
+    font-family:'Anton',sans-serif; font-size:15px; letter-spacing:.5px;
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2.5px solid var(--ink); border-radius:var(--r-pill); padding:8px 18px;
+    box-shadow:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+  }
+
+  /* grid de stats */
+  .carta-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
+  .cstat {
+    background:rgba(255,255,255,.04); border:1.5px solid var(--border);
+    border-radius:var(--r-md); padding:12px 13px;
+  }
+  .cstat .k { font-size:10.5px; font-weight:900; color:var(--text-dim); display:flex; align-items:center; gap:5px; text-transform:uppercase; letter-spacing:.3px; }
+  .cstat .v { font-family:'Anton',sans-serif; font-size:26px; margin-top:5px; line-height:1; }
+  .cstat .v small { font-size:13px; }
+  .cstat.xp .v { color:var(--xp); }
+  .cstat.pos .v { color:#fff; }
+  .cstat.pos .v .up { color:var(--success); font-size:15px; }
+  .cstat.streak .v { color:var(--orange-soft); }
+  .cstat.top .v { color:var(--gold); font-size:19px; padding-top:3px; }
+
+  /* mensagem */
+  .carta-msg {
+    margin-top:16px; padding:13px 15px;
+    background:rgba(255,107,0,.08); border:1.5px solid rgba(255,107,0,.3);
+    border-radius:var(--r-md);
+    font-size:13px; font-weight:800; color:#fff; text-align:center; line-height:1.5;
+  }
+  .carta-foot {
+    margin-top:14px; text-align:center;
+    font-size:10.5px; font-weight:900; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold);
+  }
+
+  /* ===== BOTÕES DE AÇÃO ===== */
+  .actions { display:flex; flex-direction:column; gap:11px; }
+  .btn {
+    min-height:54px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:16px; letter-spacing:.3px;
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    border:2.5px solid var(--ink); text-transform:uppercase;
+  }
+  .btn-wa {
+    background:linear-gradient(180deg, #2fe673, var(--wa)); color:#06351a;
+    box-shadow:0 6px 0 var(--wa-deep), 0 14px 26px -8px rgba(37,211,102,.55);
+    text-shadow:0 1px 0 rgba(255,255,255,.3);
+  }
+  .btn-wa:active { transform:translateY(4px); box-shadow:0 2px 0 var(--wa-deep); }
+  .btn-save {
+    background:rgba(255,255,255,.04); border-color:var(--gold); color:var(--gold);
+    box-shadow:0 5px 0 rgba(247,201,72,.18);
+  }
+  .btn-save:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(247,201,72,.18); }
+
+  /* ===== CARTAS ANTERIORES ===== */
+  .prev-head { display:flex; align-items:center; gap:10px; margin-bottom:13px; }
+  .prev-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:15px; letter-spacing:.5px; color:var(--text-dim); white-space:nowrap; }
+  .prev-line { flex:1; height:3px; border-radius:var(--r-pill); background:repeating-linear-gradient(115deg, var(--border) 0 6px, transparent 6px 11px); }
+
+  .prev-scroll {
+    display:flex; gap:12px; overflow-x:auto; padding:2px 2px 12px;
+    scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+  }
+  .prev-scroll::-webkit-scrollbar { height:5px; }
+  .prev-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+  .prev-card {
+    flex:0 0 128px; scroll-snap-align:start;
+    background:linear-gradient(165deg, #241552, #160d36);
+    border:2px solid var(--border); border-radius:var(--r-md);
+    padding:13px 12px; text-align:center; cursor:pointer;
+  }
+  .prev-card .pw { font-size:10px; font-weight:900; letter-spacing:.5px; text-transform:uppercase; color:var(--text-faint); }
+  .prev-av {
+    width:46px; height:46px; margin:9px auto 0; border-radius:50%; padding:2.5px;
+    display:grid; place-items:center;
+  }
+  .prev-av .pf { width:100%; height:100%; border-radius:50%; background:repeating-linear-gradient(45deg, var(--raised) 0 6px, var(--card) 6px 12px); border:2px solid var(--ink); display:grid; place-items:center; font-size:22px; }
+  .rar-gold { background:conic-gradient(from 0deg, var(--gold), #fff, var(--orange), var(--gold)); }
+  .rar-silver { background:conic-gradient(from 0deg, #8893A6, #C9D2E0, #8893A6); }
+  .rar-bronze { background:conic-gradient(from 0deg, #9A5F2E, #D08B4E, #9A5F2E); }
+  .prev-card .prole { font-size:9.5px; font-weight:900; color:var(--orange-soft); margin-top:8px; text-transform:uppercase; line-height:1.2; }
+  .prev-card .pxp { font-family:'Anton',sans-serif; font-size:17px; color:var(--xp); margin-top:5px; }
+  .prev-card .ppos { font-size:9.5px; font-weight:800; color:var(--text-dim); margin-top:2px; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg,#241552,#160D34);
+    border-top:2.5px solid var(--border);
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.8);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom)); z-index:40;
+  }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-size:10px; font-weight:900; color:var(--text-faint); border:none; background:none; border-radius:var(--r-md); }
+  .nav-item .ico { font-size:21px; line-height:1; filter:grayscale(.4) opacity(.7); transition:.15s; }
+  .nav-item.active { color:var(--orange-soft); }
+  .nav-item.active .ico { filter:none; transform:translateY(-1px); text-shadow:0 0 14px rgba(255,107,0,.8); }
+  .nav-item.active::after { content:""; width:22px; height:4px; border-radius:var(--r-pill); background:var(--orange); box-shadow:0 0 10px -1px var(--orange); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Carta Semanal">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <h1 class="h-title display">Carta da Semana</h1>
+    <div class="h-sub">Semana 23 • 2 a 8 de junho</div>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== A CARTA ===== -->
+    <section class="carta" data-screen-label="Carta compartilhável">
+      <span class="leaf l1">🍃</span>
+      <span class="leaf l2">🌀</span>
+
+      <div class="carta-top">
+        <span class="carta-logo"><span class="t">Turma</span><span class="x">XP</span></span>
+        <span class="carta-week">5ºB • Semana 23</span>
+      </div>
+
+      <div class="carta-hero">
+        <div class="carta-av"><div class="face">🦊</div></div>
+        <div class="carta-name">Naruto Uzumaki</div>
+        <div><span class="carta-role">🔥 Rei da Sequência</span></div>
+      </div>
+
+      <div class="carta-stats">
+        <div class="cstat xp">
+          <div class="k">⭐ XP Semanal</div>
+          <div class="v num">340 <small>XP</small></div>
+        </div>
+        <div class="cstat pos">
+          <div class="k">🏆 Posição</div>
+          <div class="v num">#4 <span class="up">▲1</span></div>
+        </div>
+        <div class="cstat streak">
+          <div class="k">🔥 Streak</div>
+          <div class="v num">12 <small>dias</small></div>
+        </div>
+        <div class="cstat top">
+          <div class="k">📚 Matéria top</div>
+          <div class="v">Matemática</div>
+        </div>
+      </div>
+
+      <div class="carta-msg">
+        Boa semana! Você está perto do top 3.<br />Continue assim, ninja! 💪
+      </div>
+
+      <div class="carta-foot">turma-xp.app</div>
+    </section>
+
+    <!-- ===== BOTÕES ===== -->
+    <section class="actions" data-screen-label="Ações de compartilhamento">
+      <button class="btn btn-wa">📤 Compartilhar no WhatsApp</button>
+      <button class="btn btn-save">⬇️ Salvar imagem</button>
+    </section>
+
+    <!-- ===== CARTAS ANTERIORES ===== -->
+    <section data-screen-label="Semanas anteriores">
+      <div class="prev-head">
+        <span class="prev-title">Semanas anteriores</span>
+        <span class="prev-line"></span>
+      </div>
+      <div class="prev-scroll">
+        <div class="prev-card">
+          <div class="pw">Semana 22</div>
+          <div class="prev-av rar-silver"><div class="pf">🦊</div></div>
+          <div class="prole">⚡ Vento Veloz</div>
+          <div class="pxp num">290</div>
+          <div class="ppos">#5 ▼1</div>
+        </div>
+        <div class="prev-card">
+          <div class="pw">Semana 21</div>
+          <div class="prev-av rar-gold"><div class="pf">🦊</div></div>
+          <div class="prole">🔥 Imparável</div>
+          <div class="pxp num">410</div>
+          <div class="ppos">#2 ▲2</div>
+        </div>
+        <div class="prev-card">
+          <div class="pw">Semana 20</div>
+          <div class="prev-av rar-bronze"><div class="pf">🦊</div></div>
+          <div class="prole">⭐ Semana Perfeita</div>
+          <div class="pxp num">375</div>
+          <div class="ppos">#3 —</div>
+        </div>
+        <div class="prev-card">
+          <div class="pw">Semana 19</div>
+          <div class="prev-av rar-silver"><div class="pf">🦊</div></div>
+          <div class="prole">💪 Recomeço</div>
+          <div class="pxp num">230</div>
+          <div class="ppos">#7 ▲3</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <button class="nav-item"><span class="ico">🏠</span>Home</button>
+    <button class="nav-item"><span class="ico">🏆</span>Ranking</button>
+    <button class="nav-item"><span class="ico">👤</span>Perfil</button>
+    <button class="nav-item active"><span class="ico">💬</span>Turma</button>
+  </nav>
+
+</div>
+</body>
+</html>

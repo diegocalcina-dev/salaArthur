@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Gerenciar Missões</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --mat:#3D7BFF; --port:#34C759; --cien:#9B59B6; --hist:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620;
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:radial-gradient(120% 38% at 50% -8%, #251650 0%, rgba(37,22,80,0) 60%), var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.88));
+    backdrop-filter:blur(8px); border-bottom:1.5px solid var(--border);
+    padding:13px 14px; display:flex; align-items:center; gap:10px;
+  }
+  .back { flex-shrink:0; width:38px; height:38px; border-radius:11px; background:var(--raised); border:1.5px solid var(--border); display:grid; place-items:center; font-size:19px; color:#fff; cursor:pointer; }
+  .h-title { flex:1; font-size:17px; color:#fff; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .new-btn {
+    flex-shrink:0; display:inline-flex; align-items:center; gap:5px;
+    font-weight:900; font-size:12px; color:#fff; text-shadow:0 1px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2px solid var(--ink); border-radius:var(--r-pill); padding:8px 13px; cursor:pointer;
+    box-shadow:0 4px 0 var(--orange-deep);
+  }
+
+  /* ===== FILTROS ===== */
+  .filters { display:flex; gap:8px; overflow-x:auto; padding:14px 16px 4px; scrollbar-width:none; }
+  .filters::-webkit-scrollbar { display:none; }
+  .chip {
+    flex-shrink:0; font-weight:900; font-size:12.5px; white-space:nowrap;
+    color:var(--text-dim); background:var(--card); border:1.5px solid var(--border);
+    border-radius:var(--r-pill); padding:8px 16px; cursor:pointer;
+  }
+  .chip.active { color:#fff; background:linear-gradient(180deg, var(--orange-soft), var(--orange)); border-color:var(--ink); box-shadow:0 3px 0 var(--orange-deep); }
+
+  .content { padding:12px 16px 30px; display:flex; flex-direction:column; gap:12px; }
+
+  /* ===== CARD DE TAREFA ===== */
+  .task {
+    background:var(--card); border:1.5px solid var(--border); border-radius:var(--r-lg);
+    padding:14px; box-shadow:var(--shadow-card);
+  }
+  .task-badges { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .tb {
+    font-size:9.5px; font-weight:900; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 9px; border-radius:var(--r-pill); border:1.5px solid;
+  }
+  .tb-daily { color:#9DBBFF; background:rgba(61,123,255,.12); border-color:var(--mat); }
+  .tb-once { color:#FAD79E; background:rgba(247,169,59,.12); border-color:var(--amber); }
+  .tb-weekly { color:#D6AEE8; background:rgba(155,89,182,.14); border-color:var(--rare); }
+  .tb-mat { color:#9DBBFF; background:rgba(61,123,255,.1); border-color:rgba(61,123,255,.5); }
+  .tb-port { color:#97E9AC; background:rgba(52,199,89,.1); border-color:rgba(52,199,89,.5); }
+  .tb-cien { color:#D6AEE8; background:rgba(155,89,182,.12); border-color:rgba(155,89,182,.5); }
+  .tb-exam { color:#fff; background:var(--danger); border-color:var(--ink); }
+
+  .task-title { font-weight:900; font-size:16px; margin:11px 0 6px; }
+  .task-line { font-size:12px; font-weight:700; color:var(--text-dim); display:flex; align-items:center; gap:6px; }
+  .task-rewards { font-size:12.5px; font-weight:900; color:var(--gold); margin-top:5px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .task-rewards .min { color:var(--orange-soft); }
+  .task-rewards .bonus { color:var(--text-faint); font-weight:800; font-size:11px; }
+
+  .task-foot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; padding-top:12px; border-top:1px solid var(--border); }
+  .status {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:900; padding:5px 12px; border-radius:var(--r-pill); border:1.5px solid;
+  }
+  .st-done { color:#97E9AC; background:rgba(52,199,89,.12); border-color:var(--success); }
+  .st-pending { color:var(--gold); background:rgba(247,201,72,.1); border-color:rgba(247,201,72,.4); }
+  .task-actions { display:flex; gap:8px; }
+  .act {
+    width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+    background:var(--raised); border:1.5px solid var(--border); color:var(--text-dim);
+    font-size:15px; cursor:pointer;
+  }
+  .act:active { transform:scale(.92); }
+  .act.danger { color:var(--danger); border-color:rgba(231,76,60,.4); background:rgba(231,76,60,.08); }
+
+  /* ===== OVERLAY + BOTTOM SHEET ===== */
+  .overlay {
+    position:fixed; inset:0; z-index:50;
+    background:rgba(8,5,24,.72); backdrop-filter:blur(3px);
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .sheet {
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg, #20143f, #160d34);
+    border:2px solid var(--border); border-bottom:none;
+    border-radius:24px 24px 0 0;
+    padding:8px 18px calc(20px + env(safe-area-inset-bottom));
+    box-shadow:0 -16px 40px -10px rgba(0,0,0,.8);
+    max-height:92vh; overflow-y:auto;
+    animation:sheetUp .35s cubic-bezier(.2,.9,.2,1);
+  }
+  @keyframes sheetUp { from { transform:translateY(100%);} to { transform:translateY(0);} }
+  .grab { width:42px; height:5px; border-radius:99px; background:var(--border); margin:6px auto 14px; }
+  .sheet-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:21px; color:#fff; }
+  .sheet-sub { font-size:12px; font-weight:700; color:var(--text-dim); margin:3px 0 18px; }
+
+  .field { margin-bottom:17px; }
+  .field-label { font-size:11px; font-weight:900; letter-spacing:.8px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; display:block; }
+  .input {
+    width:100%; background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md);
+    padding:13px 14px; color:#fff; font-family:inherit; font-size:15px; font-weight:700;
+  }
+  .input::placeholder { color:var(--text-faint); font-weight:600; }
+  .input:focus { outline:none; border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,107,0,.15); }
+
+  .pick-row { display:flex; flex-wrap:wrap; gap:8px; }
+  .pick-chip {
+    font-weight:900; font-size:12.5px; color:var(--text-dim);
+    background:var(--bg); border:2px solid var(--border); border-radius:var(--r-pill);
+    padding:8px 14px; cursor:pointer;
+  }
+  .pick-chip.sel { color:#fff; background:rgba(61,123,255,.18); border-color:var(--mat); }
+
+  .stepper { display:flex; gap:7px; flex-wrap:wrap; }
+  .step-opt {
+    min-width:46px; text-align:center; font-family:'Anton',sans-serif; font-size:16px;
+    color:var(--text-dim); background:var(--bg); border:2px solid var(--border);
+    border-radius:var(--r-md); padding:9px 0; cursor:pointer;
+  }
+  .step-opt.sel { color:var(--ink); background:linear-gradient(180deg,#FFDC74,var(--gold)); border-color:var(--ink); }
+  .step-opt.sel.orange { color:#fff; background:linear-gradient(180deg,var(--orange-soft),var(--orange)); }
+
+  .radio-row { display:flex; flex-direction:column; gap:9px; }
+  .radio {
+    display:flex; align-items:center; gap:11px;
+    background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md);
+    padding:12px 14px; cursor:pointer; font-weight:800; font-size:14px; color:var(--text-dim);
+  }
+  .radio.sel { border-color:var(--orange); color:#fff; background:rgba(255,107,0,.06); }
+  .radio .dot { width:20px; height:20px; border-radius:50%; border:2.5px solid var(--border); flex-shrink:0; display:grid; place-items:center; }
+  .radio.sel .dot { border-color:var(--orange); }
+  .radio.sel .dot::after { content:""; width:9px; height:9px; border-radius:50%; background:var(--orange); box-shadow:0 0 8px var(--orange); }
+
+  .create-btn {
+    width:100%; min-height:54px; margin-top:6px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:16px; text-transform:uppercase; letter-spacing:.5px;
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2.5px solid var(--ink); box-shadow:var(--glow-orange);
+  }
+  .create-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--orange-deep); }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Gerenciar Tarefas">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <button class="back">←</button>
+    <h1 class="h-title display">Missões do Naruto</h1>
+    <button class="new-btn">➕ Nova</button>
+  </header>
+
+  <!-- ===== FILTROS ===== -->
+  <div class="filters">
+    <span class="chip active">Todas</span>
+    <span class="chip">Hoje</span>
+    <span class="chip">Esta semana</span>
+    <span class="chip">Recorrentes</span>
+  </div>
+
+  <div class="content">
+
+    <!-- TAREFA DIÁRIA -->
+    <article class="task" data-screen-label="Tarefa diária">
+      <div class="task-badges">
+        <span class="tb tb-daily">🔁 Diária</span>
+        <span class="tb tb-mat">Matemática</span>
+      </div>
+      <h3 class="task-title">Lição de Matemática</h3>
+      <div class="task-line">🔁 Repete todo dia útil</div>
+      <div class="task-rewards">⭐ 10 XP <span class="min">🕐 +5 min</span></div>
+      <div class="task-foot">
+        <span class="status st-done">✅ Feita hoje</span>
+        <div class="task-actions">
+          <button class="act">✏️</button>
+          <button class="act">⏸️</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- TAREFA ÚNICA URGENTE -->
+    <article class="task" data-screen-label="Tarefa única urgente">
+      <div class="task-badges">
+        <span class="tb tb-once">📌 Única</span>
+        <span class="tb tb-port">Português</span>
+        <span class="tb tb-exam">⚠️ Prova em 2 dias</span>
+      </div>
+      <h3 class="task-title">Revisar verbos no pretérito</h3>
+      <div class="task-line">📅 Até quinta-feira, 12/06</div>
+      <div class="task-rewards">⭐ 30 XP <span class="min">🕐 +15 min</span> <span class="bonus">bônus revisão</span></div>
+      <div class="task-foot">
+        <span class="status st-pending">⏳ Pendente</span>
+        <div class="task-actions">
+          <button class="act">✏️</button>
+          <button class="act danger">🗑️</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- TAREFA SEMANAL -->
+    <article class="task" data-screen-label="Tarefa semanal">
+      <div class="task-badges">
+        <span class="tb tb-weekly">🔁 Semanal</span>
+        <span class="tb tb-cien">Ciências</span>
+      </div>
+      <h3 class="task-title">Resumo do capítulo da semana</h3>
+      <div class="task-line">🔁 Toda sexta-feira</div>
+      <div class="task-rewards">⭐ 20 XP <span class="min">🕐 +10 min</span></div>
+      <div class="task-foot">
+        <span class="status st-done">✅ Feita</span>
+        <div class="task-actions">
+          <button class="act">✏️</button>
+          <button class="act">⏸️</button>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===== BOTTOM SHEET: NOVA MISSÃO ===== -->
+  <div class="overlay" data-screen-label="Nova missão">
+    <div class="sheet">
+      <div class="grab"></div>
+      <h2 class="sheet-title">Nova missão</h2>
+      <p class="sheet-sub">Crie uma tarefa para o Naruto ganhar XP e tempo.</p>
+
+      <div class="field">
+        <label class="field-label">Nome da missão</label>
+        <input class="input" type="text" placeholder="Ex: Lição de Matemática" />
+      </div>
+
+      <div class="field">
+        <label class="field-label">Matéria</label>
+        <div class="pick-row">
+          <span class="pick-chip sel">Matemática</span>
+          <span class="pick-chip">Português</span>
+          <span class="pick-chip">Ciências</span>
+          <span class="pick-chip">História</span>
+          <span class="pick-chip">Outro</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">XP da missão</label>
+        <div class="stepper">
+          <span class="step-opt">5</span>
+          <span class="step-opt sel">10</span>
+          <span class="step-opt">15</span>
+          <span class="step-opt">20</span>
+          <span class="step-opt">25</span>
+          <span class="step-opt">30</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Minutos de recompensa</label>
+        <div class="stepper">
+          <span class="step-opt sel orange">5</span>
+          <span class="step-opt">10</span>
+          <span class="step-opt">15</span>
+          <span class="step-opt">20</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Frequência</label>
+        <div class="radio-row">
+          <label class="radio sel"><span class="dot"></span>Uma vez</label>
+          <label class="radio"><span class="dot"></span>Todo dia útil</label>
+          <label class="radio"><span class="dot"></span>Toda semana</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Data (entrega)</label>
+        <input class="input" type="text" value="12/06/2026" />
+      </div>
+
+      <button class="create-btn">Criar missão</button>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TurmaXP — Feed da Turma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange:#FF6B00; --orange-deep:#E15400; --orange-soft:#FF8A3D;
+    --gold:#F7C948; --gold-deep:#D9A516;
+    --bg:#120B2E; --bg-2:#170E38; --card:#1E1240; --raised:#2A1B50; --border:#3D2A70;
+    --text:#FFFFFF; --text-dim:#B8A9D9; --text-faint:#6E5E9B;
+    --success:#4CAF50; --xp:#FFD700; --rare:#9B59B6; --danger:#E74C3C; --amber:#F7A93B;
+    --r-sm:10px; --r-md:16px; --r-lg:20px; --r-pill:999px;
+    --ink:#0B0620; --outline:2.5px solid var(--ink);
+    --glow-orange:0 5px 0 var(--orange-deep), 0 12px 22px -8px rgba(255,107,0,.6);
+    --shadow-card:0 10px 26px -14px rgba(0,0,0,.7);
+    --maxw:390px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#0A0620; }
+  body {
+    font-family:'Nunito',system-ui,sans-serif; color:var(--text); line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(120% 40% at 50% -6%, #2f1c5a 0%, rgba(47,28,90,0) 58%),
+      var(--bg);
+    min-height:100vh;
+  }
+  .display { font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:.5px; line-height:1; font-weight:400; }
+  .num { font-weight:900; font-variant-numeric:tabular-nums; }
+  .phone { max-width:var(--maxw); margin:0 auto; position:relative; padding-bottom:84px; min-height:100vh; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, rgba(23,14,56,.96), rgba(18,11,46,.85));
+    backdrop-filter:blur(8px); border-bottom:1.5px solid var(--border);
+    padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .h-title { font-size:21px; color:#fff; }
+  .mascot-mini {
+    flex-shrink:0; display:flex; align-items:center; gap:8px;
+    background:var(--raised); border:1.5px solid var(--border); border-radius:var(--r-pill);
+    padding:5px 12px 5px 6px;
+  }
+  .mascot-mini .m {
+    width:30px; height:30px; border-radius:50%; border:2px solid var(--ink);
+    background:conic-gradient(from 0deg,var(--orange),var(--gold),var(--orange));
+    display:grid; place-items:center; font-size:15px;
+  }
+  .mascot-mini .lv { font-size:10px; font-weight:900; color:var(--orange-soft); }
+
+  .content { padding:16px; display:flex; flex-direction:column; gap:16px; }
+
+  /* ===== STATUS DO MASCOTE ===== */
+  .mascot {
+    position:relative; overflow:hidden;
+    border-radius:var(--r-lg); border:2px solid var(--orange);
+    background:
+      radial-gradient(120% 120% at 0% 0%, rgba(255,107,0,.20), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #2a1850, #160d36);
+    padding:15px; box-shadow:0 0 0 1px rgba(255,107,0,.15), var(--shadow-card);
+  }
+  .mascot-top { display:flex; align-items:center; gap:13px; }
+  .mascot-av {
+    flex-shrink:0; width:58px; height:58px; border-radius:16px; position:relative;
+    background:conic-gradient(from 0deg, var(--orange), var(--gold), var(--orange));
+    padding:3px; box-shadow:0 0 16px -2px rgba(255,107,0,.6);
+  }
+  .mascot-av .face { width:100%; height:100%; border-radius:13px; background:repeating-linear-gradient(45deg, var(--raised) 0 7px, var(--card) 7px 14px); border:2px solid var(--ink); display:grid; place-items:center; font-size:30px; }
+  .mascot-av .lvbadge {
+    position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+    font-family:'Anton',sans-serif; font-size:10px; color:var(--ink);
+    background:linear-gradient(180deg,#FFDC74,var(--gold)); border:2px solid var(--ink);
+    border-radius:var(--r-pill); padding:2px 8px 1px; white-space:nowrap;
+  }
+  .mascot-info { flex:1; min-width:0; }
+  .mascot-name { font-weight:900; font-size:16px; }
+  .mascot-name b { color:var(--gold); font-size:12px; margin-left:5px; font-weight:900; }
+  .mascot-lvltxt { font-size:11px; font-weight:800; color:var(--text-dim); margin-top:1px; }
+  .mbar { height:14px; background:var(--bg); border:2px solid var(--ink); border-radius:var(--r-pill); overflow:hidden; margin-top:8px; box-shadow:inset 0 2px 5px rgba(0,0,0,.6); }
+  .mbar i { display:block; height:100%; width:68%; border-radius:var(--r-pill); background:linear-gradient(180deg,var(--orange-soft),var(--orange)); box-shadow:0 0 10px 1px rgba(255,107,0,.7); position:relative; overflow:hidden; }
+  .mbar i::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(115deg, rgba(255,255,255,.2) 0 5px, transparent 5px 13px); }
+  .mascot-foot { display:flex; align-items:center; justify-content:space-between; margin-top:9px; }
+  .mascot-prog { font-size:10.5px; font-weight:900; color:var(--orange-soft); }
+  .mascot-motiv { font-size:11px; font-weight:800; color:var(--text-dim); }
+
+  /* ===== FEED ===== */
+  .feed-head { display:flex; align-items:center; gap:10px; }
+  .feed-title { font-family:'Anton',sans-serif; text-transform:uppercase; font-size:15px; letter-spacing:1px; color:var(--text-dim); white-space:nowrap; }
+  .feed-line { flex:1; height:3px; border-radius:var(--r-pill); background:repeating-linear-gradient(115deg, var(--border) 0 6px, transparent 6px 11px); }
+  .feed-live { font-size:10px; font-weight:900; color:var(--danger); display:inline-flex; align-items:center; gap:5px; text-transform:uppercase; }
+  .feed-live .d { width:7px;height:7px;border-radius:50%;background:var(--danger); box-shadow:0 0 0 0 rgba(231,76,60,.7); animation:lb 1.4s infinite; }
+  @keyframes lb { 0%,100%{ box-shadow:0 0 0 0 rgba(231,76,60,.7);} 50%{ box-shadow:0 0 0 5px rgba(231,76,60,0);} }
+
+  .feed { display:flex; flex-direction:column; gap:12px; }
+
+  .event {
+    background:linear-gradient(180deg, var(--raised), var(--card));
+    border:1.5px solid var(--border); border-radius:var(--r-lg);
+    padding:14px; box-shadow:var(--shadow-card); cursor:pointer;
+    transition:border-color .15s;
+  }
+  .event:active { border-color:var(--orange); }
+  .event-top { display:flex; align-items:center; gap:11px; }
+  .ev-av {
+    flex-shrink:0; width:42px; height:42px; border-radius:50%; border:2.5px solid var(--ink);
+    display:grid; place-items:center; font-size:21px;
+    background:repeating-linear-gradient(45deg, var(--raised) 0 6px, var(--card) 6px 12px);
+  }
+  .ev-av.me { box-shadow:0 0 0 2px var(--orange); }
+  .ev-meta { flex:1; min-width:0; }
+  .ev-badge {
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:9.5px; font-weight:900; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 9px; border-radius:var(--r-pill); border:1.5px solid;
+  }
+  .b-rank { color:var(--gold); background:rgba(247,201,72,.12); border-color:var(--gold); }
+  .b-streak { color:var(--orange-soft); background:rgba(255,107,0,.12); border-color:var(--orange); }
+  .b-team { color:var(--ink); background:linear-gradient(180deg,#FFDC74,var(--gold)); border-color:var(--ink); }
+  .b-perfect { color:#97E9AC; background:rgba(52,199,89,.12); border-color:var(--success); }
+  .b-card { color:#9DBBFF; background:rgba(61,123,255,.12); border-color:#3D7BFF; }
+  .ev-time { font-size:10.5px; font-weight:800; color:var(--text-faint); margin-top:4px; }
+  .ev-text { font-size:13.5px; font-weight:700; color:#fff; margin-top:11px; line-height:1.45; }
+  .ev-text b { font-weight:900; color:var(--orange-soft); }
+
+  /* evento coletivo destaque */
+  .event.team {
+    border:2px solid var(--gold);
+    background:
+      radial-gradient(120% 120% at 50% 0%, rgba(247,201,72,.16), rgba(30,18,64,0) 55%),
+      linear-gradient(135deg, #322411, #1b1140);
+    box-shadow:0 0 0 1px rgba(247,201,72,.2), 0 12px 26px -14px rgba(247,201,72,.4);
+  }
+  .event.team .ev-text { font-weight:800; }
+  .event.team .ev-text .big { font-family:'Anton',sans-serif; font-size:16px; color:var(--gold); display:block; margin-bottom:3px; letter-spacing:.5px; }
+
+  /* reações */
+  .reactions { display:flex; align-items:center; gap:7px; margin-top:13px; flex-wrap:wrap; }
+  .react {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:12px; font-weight:900; color:var(--text-dim);
+    background:rgba(255,255,255,.04); border:1.5px solid var(--border);
+    border-radius:var(--r-pill); padding:4px 10px; cursor:pointer;
+  }
+  .react:active { border-color:var(--orange); background:rgba(255,107,0,.1); }
+  .react .e { font-size:13px; }
+  .react-add {
+    width:30px; height:30px; border-radius:50%; display:grid; place-items:center;
+    background:rgba(255,107,0,.08); border:1.5px dashed var(--orange); color:var(--orange-soft);
+    font-size:14px; cursor:pointer; margin-left:auto;
+  }
+  .ev-cta {
+    margin-top:12px; width:100%; min-height:42px; border-radius:var(--r-pill); cursor:pointer;
+    font-weight:900; font-size:13px; text-transform:uppercase; letter-spacing:.4px;
+    color:#fff; text-shadow:0 2px 0 rgba(11,6,32,.4);
+    background:linear-gradient(180deg, var(--orange-soft), var(--orange));
+    border:2.5px solid var(--ink); box-shadow:var(--glow-orange);
+  }
+  .ev-cta:active { transform:translateY(3px); box-shadow:0 2px 0 var(--orange-deep); }
+
+  /* ===== BARRA DE REAÇÃO FLUTUANTE ===== */
+  .react-bar {
+    position:fixed; bottom:88px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:45;
+    background:var(--raised); border:2.5px solid var(--ink); border-radius:var(--r-pill);
+    padding:8px 12px; box-shadow:0 12px 30px -8px rgba(0,0,0,.8), 0 0 0 1px var(--border);
+    animation:popIn .3s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes popIn { from { opacity:0; transform:translateX(-50%) translateY(10px) scale(.9);} to { opacity:1; transform:translateX(-50%) translateY(0) scale(1);} }
+  .react-bar .pick {
+    width:42px; height:42px; border-radius:50%; display:grid; place-items:center;
+    font-size:22px; cursor:pointer; background:var(--card); border:1.5px solid var(--border);
+    transition:transform .12s;
+  }
+  .react-bar .pick:active { transform:scale(1.25) translateY(-4px); }
+  .react-bar .pick:hover { transform:scale(1.15) translateY(-3px); border-color:var(--orange); }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:var(--maxw);
+    background:linear-gradient(180deg,#241552,#160D34);
+    border-top:2.5px solid var(--border);
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.8);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom)); z-index:40;
+  }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer; font-size:10px; font-weight:900; color:var(--text-faint); border:none; background:none; border-radius:var(--r-md); }
+  .nav-item .ico { font-size:21px; line-height:1; filter:grayscale(.4) opacity(.7); transition:.15s; }
+  .nav-item.active { color:var(--orange-soft); }
+  .nav-item.active .ico { filter:none; transform:translateY(-1px); text-shadow:0 0 14px rgba(255,107,0,.8); }
+  .nav-item.active::after { content:""; width:22px; height:4px; border-radius:var(--r-pill); background:var(--orange); box-shadow:0 0 10px -1px var(--orange); margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="phone" data-screen-label="Feed da Turma">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <h1 class="h-title display">Turma 5ºB</h1>
+    <div class="mascot-mini">
+      <span class="m">🦊</span>
+      <span class="lv">Mascote NV 3</span>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== STATUS DO MASCOTE ===== -->
+    <section class="mascot" data-screen-label="Status do mascote">
+      <div class="mascot-top">
+        <div class="mascot-av">
+          <div class="face">🦊</div>
+          <span class="lvbadge">NV 3/5</span>
+        </div>
+        <div class="mascot-info">
+          <div class="mascot-name">Kurama Jr. <b>MASCOTE</b></div>
+          <div class="mascot-lvltxt">Evoluindo para o Nível 4</div>
+          <div class="mbar"><i></i></div>
+        </div>
+      </div>
+      <div class="mascot-foot">
+        <span class="mascot-prog">68% • faltam 25 tarefas</span>
+        <span class="mascot-motiv">A turma está arrasando! 🔥</span>
+      </div>
+    </section>
+
+    <!-- ===== FEED ===== -->
+    <div class="feed-head">
+      <span class="feed-title">Mural da turma</span>
+      <span class="feed-line"></span>
+      <span class="feed-live"><span class="d"></span>Ao vivo</span>
+    </div>
+
+    <div class="feed">
+
+      <!-- CARD 1 -->
+      <article class="event" data-screen-label="Evento Sasuke">
+        <div class="event-top">
+          <span class="ev-av">🥷</span>
+          <div class="ev-meta">
+            <span class="ev-badge b-rank">🏆 Novo #1</span>
+            <div class="ev-time">há 12 min</div>
+          </div>
+        </div>
+        <p class="ev-text"><b>Sasuke</b> assumiu o 1º lugar do ranking com 1.240 XP! 🔥</p>
+        <div class="reactions">
+          <span class="react"><span class="e">👏</span>8</span>
+          <span class="react"><span class="e">🔥</span>5</span>
+          <span class="react"><span class="e">⭐</span>3</span>
+          <span class="react-add">＋</span>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="event" data-screen-label="Evento Rock Lee">
+        <div class="event-top">
+          <span class="ev-av">🟢</span>
+          <div class="ev-meta">
+            <span class="ev-badge b-streak">🔥 Streak</span>
+            <div class="ev-time">há 1 hora</div>
+          </div>
+        </div>
+        <p class="ev-text"><b>Rock Lee</b> completou 7 dias seguidos! Recompensa desbloqueada.</p>
+        <div class="reactions">
+          <span class="react"><span class="e">👏</span>12</span>
+          <span class="react"><span class="e">💪</span>7</span>
+          <span class="react-add">＋</span>
+        </div>
+      </article>
+
+      <!-- CARD 3 — coletivo -->
+      <article class="event team" data-screen-label="Evento coletivo">
+        <div class="event-top">
+          <span class="ev-av" style="background:var(--gold)">🦊</span>
+          <div class="ev-meta">
+            <span class="ev-badge b-team">🎉 Turma</span>
+            <div class="ev-time">hoje cedo</div>
+          </div>
+        </div>
+        <p class="ev-text"><span class="big">Kurama Jr. evoluiu para o Nível 3!</span> A turma completou 85% das tarefas essa semana. 💪</p>
+        <div class="reactions">
+          <span class="react"><span class="e">👏</span>24</span>
+          <span class="react"><span class="e">🔥</span>18</span>
+          <span class="react"><span class="e">⭐</span>15</span>
+          <span class="react-add">＋</span>
+        </div>
+      </article>
+
+      <!-- CARD 4 -->
+      <article class="event" data-screen-label="Evento Hinata">
+        <div class="event-top">
+          <span class="ev-av">🐚</span>
+          <div class="ev-meta">
+            <span class="ev-badge b-perfect">✅ Semana Perfeita</span>
+            <div class="ev-time">ontem</div>
+          </div>
+        </div>
+        <p class="ev-text"><b>Hinata</b> concluiu 100% das tarefas da semana! Título "Semana Perfeita" desbloqueado.</p>
+        <div class="reactions">
+          <span class="react"><span class="e">👏</span>9</span>
+          <span class="react"><span class="e">⭐</span>6</span>
+          <span class="react-add">＋</span>
+        </div>
+      </article>
+
+      <!-- CARD 5 — usuário -->
+      <article class="event" data-screen-label="Evento minha carta">
+        <div class="event-top">
+          <span class="ev-av me" style="background:var(--orange)">🦊</span>
+          <div class="ev-meta">
+            <span class="ev-badge b-card">⭐ Carta</span>
+            <div class="ev-time">ontem</div>
+          </div>
+        </div>
+        <p class="ev-text">Sua carta da semana chegou! Veja seus resultados. 📜</p>
+        <button class="ev-cta">Ver minha carta →</button>
+      </article>
+
+    </div>
+
+  </div>
+
+  <!-- ===== BARRA DE REAÇÃO FLUTUANTE (demo) ===== -->
+  <div class="react-bar">
+    <span class="pick">👏</span>
+    <span class="pick">🔥</span>
+    <span class="pick">⭐</span>
+    <span class="pick">💪</span>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <button class="nav-item"><span class="ico">🏠</span>Home</button>
+    <button class="nav-item"><span class="ico">🏆</span>Ranking</button>
+    <button class="nav-item"><span class="ico">👤</span>Perfil</button>
+    <button class="nav-item active"><span class="ico">💬</span>Turma</button>
+  </nav>
+
+</div>
+</body>
+</html>
